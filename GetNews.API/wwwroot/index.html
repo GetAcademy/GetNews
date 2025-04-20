@@ -29,12 +29,14 @@
                     /><br/>
                 <button onclick="subscribe()">Abonner på nyhetsbrev</button>
                 <button onclick="verify()">Bekreft nyhetsbrev</button>
+                <div style="color:orange;">${model.message??''}</div>
             `;
         }
 
         async function subscribe() {
             const data = await callApi('post', { EmailAddress: model.email })
-            console.log(data);
+            model.message = data.result;
+            updateView();
         }
 
         async function callApi(method, obj) {
