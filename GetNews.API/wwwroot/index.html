@@ -8,33 +8,44 @@
     <div id="app"></div>
     <script>
         const model = {
-            email: '',
+            email: 'a@b.com',
             code: '',
             message: '',
         };
         updateView();
         function updateView() {
             document.getElementById('app').innerHTML = `
-                    <input
-                        type="text"
-                        oninput="model.email=this.value"
-                        value="${model.email}"
-                        placeholder="E-postadresse"
-                        /><br/>
-                    <input
-                        type="text"
-                        oninput="model.code=this.value"
-                        value="${model.code}"
-                        placeholder="Kode"
-                        /><br/>
-                    <button onclick="subscribe()">Abonner på nyhetsbrev</button>
-                    <button onclick="verify()">Bekreft nyhetsbrev</button>
-                `;
+                <input
+                    type="text"
+                    oninput="model.email=this.value"
+                    value="${model.email}"
+                    placeholder="E-postadresse"
+                    /><br/>
+                <input
+                    type="text"
+                    oninput="model.code=this.value"
+                    value="${model.code}"
+                    placeholder="Kode"
+                    /><br/>
+                <button onclick="subscribe()">Abonner på nyhetsbrev</button>
+                <button onclick="verify()">Bekreft nyhetsbrev</button>
+            `;
         }
 
         async function subscribe() {
-            const response = await fetch('/api/subscription', { email: model.email });
-            console.log(response);
+            const data = await callApi('post', { EmailAddress: model.email })
+            console.log(data);
+        }
+
+        async function callApi(method, obj) {
+            const response = await fetch('/api/subscription', {
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                method,
+                body: JSON.stringify(obj)
+            });
+            return response.json();
         }
 
     </script>

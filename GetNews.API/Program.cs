@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.StaticFiles.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 app.UseHttpsRedirection();
+app.UseDefaultFiles();
 app.UseStaticFiles();
 app.MapPost("/api/subscription", async (SubscriptionSignUp subscriptionSignUp) =>
 {
