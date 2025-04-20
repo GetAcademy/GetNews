@@ -10,7 +10,8 @@ namespace GetNews.API.Infrastructure
         public static async Task Send(Email email, string basePath)
         {
             var fileName = CreateDirAndGetFileName(email.ToEmailAddress, basePath);
-            var json = JsonSerializer.Serialize(email);
+            var emailApi = API.ApiModel.Email.FromDomainModel(email);
+            var json = JsonSerializer.Serialize(emailApi);
             await File.WriteAllTextAsync(fileName, json);
         }
 

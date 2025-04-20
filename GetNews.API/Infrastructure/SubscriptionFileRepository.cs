@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
-using GetNews.Core.DomainModel;
+using SubscriptionApi = GetNews.API.ApiModel.Subscription;
+using SubscriptionDomain = GetNews.Core.DomainModel.Subscription;
 
 namespace GetNews.API.Infrastructure
 {
@@ -7,15 +8,15 @@ namespace GetNews.API.Infrastructure
     {
         private const string SubscriptionsFolderName = "subscriptions";
 
-        public static async Task<Subscription?> LoadSubscription(string emailAddress, string basePath)
+        public static async Task<SubscriptionDomain> LoadSubscription(string emailAddress, string basePath)
         {
             var fileName = CreateDirAndGetFileName(emailAddress, basePath);
             if (!File.Exists(fileName)) return null;
             var json = await File.ReadAllTextAsync(fileName);
-            return JsonSerializer.Deserialize<Subscription>(json);
+            return JsonSerializer.Deserialize<SubscriptionApi>(json).ToDomainModel();
         }
 
-        public static async Task SaveSubscription(Subscription subscription, string basePath)
+        public static async Task SaveSubscription(SubscriptionDomain subscription, string basePath)
         {
             var fileName = CreateDirAndGetFileName(subscription.EmailAddress, basePath);
             var json = JsonSerializer.Serialize(subscription);
