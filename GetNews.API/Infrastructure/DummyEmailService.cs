@@ -7,17 +7,18 @@ namespace GetNews.API.Infrastructure
     {
         private const string EmailsFolderName = "emails";
 
-        public static async Task Send(Email email)
+        public static async Task Send(Email email, string basePath)
         {
-            var fileName = CreateDirAndGetFileName(email.ToEmailAddress);
+            var fileName = CreateDirAndGetFileName(email.ToEmailAddress, basePath);
             var json = JsonSerializer.Serialize(email);
             await File.WriteAllTextAsync(fileName, json);
         }
 
-        private static string CreateDirAndGetFileName(string emailAddress)
+        private static string CreateDirAndGetFileName(string emailAddress, string basePath)
         {
-            Directory.CreateDirectory(EmailsFolderName);
-            var fileName = EmailsFolderName + "\\" + emailAddress + ".json";
+            var dir = basePath + "\\" + EmailsFolderName;
+            Directory.CreateDirectory(dir);
+            var fileName = dir + "\\" + emailAddress + ".json";
             return fileName;
         }
     }

@@ -7,25 +7,26 @@ namespace GetNews.API.Infrastructure
     {
         private const string SubscriptionsFolderName = "subscriptions";
 
-        public static async Task<Subscription?> GetSubscriptionByEmail(string emailAddress)
+        public static async Task<Subscription?> LoadSubscription(string emailAddress, string basePath)
         {
-            var fileName = CreateDirAndGetFileName(emailAddress);
+            var fileName = CreateDirAndGetFileName(emailAddress, basePath);
             if (!File.Exists(fileName)) return null;
             var json = await File.ReadAllTextAsync(fileName);
             return JsonSerializer.Deserialize<Subscription>(json);
         }
 
-        public static async Task SaveSubscription(Subscription subscription)
+        public static async Task SaveSubscription(Subscription subscription, string basePath)
         {
-            var fileName = CreateDirAndGetFileName(subscription.EmailAddress);
+            var fileName = CreateDirAndGetFileName(subscription.EmailAddress, basePath);
             var json = JsonSerializer.Serialize(subscription);
             await File.WriteAllTextAsync(fileName, json);
         }
 
-        private static string CreateDirAndGetFileName(string emailAddress)
+        private static string CreateDirAndGetFileName(string emailAddress, string basePath)
         {
-            Directory.CreateDirectory(SubscriptionsFolderName);
-            var fileName = SubscriptionsFolderName + "\\" + emailAddress + ".json";
+            var dir = basePath + "\\" + SubscriptionsFolderName;
+            Directory.CreateDirectory(dir);
+            var fileName = dir + "\\" + emailAddress + ".json";
             return fileName;
         }
     }
