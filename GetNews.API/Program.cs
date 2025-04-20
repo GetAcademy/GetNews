@@ -5,7 +5,8 @@ using GetNews.Core.ApplicationService;
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 app.UseHttpsRedirection();
-app.MapPost("/subscription", async (SubscriptionSignUp subscriptionSignUp) =>
+app.UseStaticFiles();
+app.MapPost("/api/subscription", async (SubscriptionSignUp subscriptionSignUp) =>
 {
     // IO
     var emailAddress = subscriptionSignUp.EmailAddress;

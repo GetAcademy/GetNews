@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        const model = {
+            email: '',
+            code: '',
+            message: '',
+        };
+        updateView();
+        function updateView() {
+            document.getElementById('app').innerHTML = `
+                    <input
+                        type="text"
+                        oninput="model.email=this.value"
+                        value="${model.email}"
+                        placeholder="E-postadresse"
+                        />
+                    <input
+                        type="text"
+                        oninput="model.code=this.value"
+                        value="${model.code}"
+                        placeholder="E-postadresse"
+                        />
+                    <button onclick="subscribe()">Abonner på nyhetsbrev</button>
+                    <button onclick="verify()">Bekreft nyhetsbrev</button>
+                `;
+        }
+
+        async function subscribe() {
+            const response = await fetch('/api/subscription', { email: model.email });
+            console.log(response);
+        }
+
+    </script>
+</body>
+</html>
