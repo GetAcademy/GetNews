@@ -1,6 +1,6 @@
 ﻿namespace GetNews.Core.DomainModel
 {
-    enum SignUpResultType
+    public enum SignUpResultType
     {
         SignedUp,
         InvalidEmailAddress,

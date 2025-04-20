@@ -1,6 +1,6 @@
 ﻿namespace GetNews.Core.DomainModel
 {
-    internal class Email
+    public class Email
     {
         public string FromEmailAddress { get; }
         public string ToEmailAddress { get; }

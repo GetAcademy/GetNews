@@ -2,7 +2,7 @@
 
 namespace GetNews.Core.ApplicationService
 {
-    internal class SubscriptionService
+    public class SubscriptionService
     {
         public static SignUpResult Signup(string emailAddressStr, Subscription? subscription)
         {
@@ -13,19 +13,15 @@ namespace GetNews.Core.ApplicationService
                 subscription = new Subscription(emailAddress);
             }
 
-            switch (subscription.Status)
+            return subscription.Status switch
             {
-                case SubscriptionStatus.Verified:
-                    return new SignUpResult(SignUpResultType.AlreadySubscribed);
-                case SubscriptionStatus.SignedUp or SubscriptionStatus.Unsubscribed:
-                {
-                    var email = Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode.Value);
-                    return new SignUpResult(SignUpResultType.SignedUp, subscription, email);
-                }
-                
-            }
+                SubscriptionStatus.Verified 
+                    => new SignUpResult(SignUpResultType.AlreadySubscribed),
+                SubscriptionStatus.SignedUp or SubscriptionStatus.Unsubscribed
+                    => new SignUpResult(SignUpResultType.SignedUp, subscription,
+                        Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode.Value))
 
-            return new SignUpResult(SignUpResultType.SignedUp);
+            };
         }
     }
 }

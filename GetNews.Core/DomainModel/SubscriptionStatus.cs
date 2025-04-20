@@ -1,6 +1,6 @@
 ﻿namespace GetNews.Core.DomainModel
 {
-    enum SubscriptionStatus
+    public enum SubscriptionStatus
     {
         SignedUp,
         Verified,
