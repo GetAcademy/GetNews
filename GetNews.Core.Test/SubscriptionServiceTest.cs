@@ -29,7 +29,7 @@ namespace GetNews.Core.Test
         public void TestSignUpAlreadySubscribed()
         {
             var emailAddress = new EmailAddress("a@bb.com");
-            var subscription = new Subscription(emailAddress, SubscriptionStatus.Verified);
+            var subscription = new Subscription(emailAddress.Value, SubscriptionStatus.Verified);
             var signUpResult = SubscriptionService.Signup(emailAddress.Value, subscription);
 
             Assert.That(signUpResult.Type, Is.EqualTo(SignUpResultType.AlreadySubscribed));
@@ -41,7 +41,7 @@ namespace GetNews.Core.Test
         public void TestSignUpWithExistingUnVerified()
         {
             var emailAddress = new EmailAddress("a@bb.com");
-            var subscription = new Subscription(emailAddress, SubscriptionStatus.SignedUp);
+            var subscription = new Subscription(emailAddress.Value, SubscriptionStatus.SignedUp);
             var signUpResult = SubscriptionService.Signup(emailAddress.Value, subscription);
 
             Assert.That(signUpResult.Type, Is.EqualTo(SignUpResultType.SignedUp));

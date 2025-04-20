@@ -10,7 +10,7 @@ namespace GetNews.Core.ApplicationService
             {
                 var emailAddress = new EmailAddress(emailAddressStr);
                 if (!emailAddress.IsValid()) return new SignUpResult(SignUpResultType.InvalidEmailAddress);
-                subscription = new Subscription(emailAddress);
+                subscription = new Subscription(emailAddressStr);
             }
 
             return subscription.Status switch

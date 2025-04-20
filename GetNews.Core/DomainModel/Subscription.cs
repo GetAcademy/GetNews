@@ -2,14 +2,14 @@
 {
     public class Subscription
     {
-        public EmailAddress EmailAddress { get; }
+        public string EmailAddress { get; }
         public SubscriptionStatus Status { get; private set; }
         public DateOnly LastStatusChange { get; private set; }
         public Guid? VerificationCode { get; }
         public bool IsVerified { get; private set; }
 
         public Subscription(
-            EmailAddress emailAddress,
+            string emailAddress,
             SubscriptionStatus status = SubscriptionStatus.SignedUp,
             Guid? verificationCode = null,
             bool isVerified = false,

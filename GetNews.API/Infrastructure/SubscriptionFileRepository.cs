@@ -17,7 +17,7 @@ namespace GetNews.API.Infrastructure
 
         public static async Task SaveSubscription(Subscription subscription)
         {
-            var fileName = CreateDirAndGetFileName(subscription.EmailAddress.Value);
+            var fileName = CreateDirAndGetFileName(subscription.EmailAddress);
             var json = JsonSerializer.Serialize(subscription);
             await File.WriteAllTextAsync(fileName, json);
         }

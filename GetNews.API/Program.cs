@@ -1,7 +1,6 @@
 using GetNews.API.ApiModel;
 using GetNews.API.Infrastructure;
 using GetNews.Core.ApplicationService;
-using Microsoft.AspNetCore.StaticFiles.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
