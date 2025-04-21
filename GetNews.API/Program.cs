@@ -1,7 +1,7 @@
 using GetNews.API;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.Configure<AppConfig>(config => { config.BasePath = builder.Environment.ContentRootPath; });
+builder.Services.Configure<AppConfig>(config => { config.BasePath = AppContext.BaseDirectory; });
 var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseDefaultFiles();
