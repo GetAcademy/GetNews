@@ -1,10 +1,10 @@
 ﻿using GetNews.Core.DomainModel;
 
-namespace GetNews.Core.ApplicationService
+namespace GetNews.Core.ApplicationLogic
 {
-    public class SubscriptionService
+    public class SubscriptionLogic
     {
-        public static SignUpResult Signup(string emailAddressStr, Subscription? subscription)
+        public static SignUpResult SignUp(string emailAddressStr, Subscription? subscription)
         {
             if (subscription == null)
             {

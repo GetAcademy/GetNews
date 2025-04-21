@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="PersistentModel\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\GetNews.Core\GetNews.Core.csproj" />
   </ItemGroup>
 

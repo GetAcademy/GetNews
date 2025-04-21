@@ -1,4 +1,4 @@
-using GetNews.Core.ApplicationService;
+using GetNews.Core.ApplicationLogic;
 using GetNews.Core.DomainModel;
 
 namespace GetNews.Core.Test
@@ -8,7 +8,7 @@ namespace GetNews.Core.Test
         [Test]
         public void TestNewSignUp()
         {
-            var signUpResult = SubscriptionService.Signup("a@bb.com", null);
+            var signUpResult = SubscriptionLogic.SignUp("a@bb.com", null);
 
             Assert.That(signUpResult.Type, Is.EqualTo(SignUpResultType.SignedUp));
             Assert.That(signUpResult.Email, Is.InstanceOf<Email>());
@@ -18,7 +18,7 @@ namespace GetNews.Core.Test
         [Test]
         public void TestSignUpInvalidEmailAddress()
         {
-            var signUpResult = SubscriptionService.Signup("abb.com", null);
+            var signUpResult = SubscriptionLogic.SignUp("abb.com", null);
 
             Assert.That(signUpResult.Type, Is.EqualTo(SignUpResultType.InvalidEmailAddress));
             Assert.That(signUpResult.Email, Is.Null);
@@ -30,7 +30,7 @@ namespace GetNews.Core.Test
         {
             var emailAddress = new EmailAddress("a@bb.com");
             var subscription = new Subscription(emailAddress.Value, SubscriptionStatus.Verified);
-            var signUpResult = SubscriptionService.Signup(emailAddress.Value, subscription);
+            var signUpResult = SubscriptionLogic.SignUp(emailAddress.Value, subscription);
 
             Assert.That(signUpResult.Type, Is.EqualTo(SignUpResultType.AlreadySubscribed));
             Assert.That(signUpResult.Email, Is.Null);
@@ -42,7 +42,7 @@ namespace GetNews.Core.Test
         {
             var emailAddress = new EmailAddress("a@bb.com");
             var subscription = new Subscription(emailAddress.Value, SubscriptionStatus.SignedUp);
-            var signUpResult = SubscriptionService.Signup(emailAddress.Value, subscription);
+            var signUpResult = SubscriptionLogic.SignUp(emailAddress.Value, subscription);
 
             Assert.That(signUpResult.Type, Is.EqualTo(SignUpResultType.SignedUp));
             Assert.That(signUpResult.Email, Is.InstanceOf<Email>());
