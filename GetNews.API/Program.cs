@@ -6,6 +6,6 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseDefaultFiles();
 app.UseStaticFiles();
-app.MapPost("/api/subscription", SubscriptionService.SignUp);
+app.MapPost("/api/subscription", SubscriptionController.SignUp);
 
 app.Run();

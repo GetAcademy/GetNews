@@ -1,11 +1,10 @@
 ﻿using GetNews.API.ApiModel;
 using GetNews.API.Infrastructure;
-using GetNews.Core.ApplicationLogic;
 using Microsoft.Extensions.Options;
 
 namespace GetNews.API
 {
-    public class SubscriptionService
+    public class SubscriptionController
     {
         public static async Task<object> SignUp(SubscriptionSignUp subscriptionSignUp, IOptions<AppConfig> options) 
         {
@@ -15,7 +14,7 @@ namespace GetNews.API
             var subscription = await SubscriptionFileRepository.LoadSubscription(emailAddress, basePath);
 
             // Logikk uten IO - i kjernen
-            var signUpResult = SubscriptionLogic.SignUp(emailAddress, subscription);
+            var signUpResult = Core.ApplicationService.SubscriptionService.SignUp(emailAddress, subscription);
 
             // IO
             if (signUpResult.Subscription != null)

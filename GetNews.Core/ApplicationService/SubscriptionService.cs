@@ -1,8 +1,8 @@
 ﻿using GetNews.Core.DomainModel;
 
-namespace GetNews.Core.ApplicationLogic
+namespace GetNews.Core.ApplicationService
 {
-    public class SubscriptionLogic
+    public class SubscriptionService
     {
         public static SignUpResult SignUp(string emailAddressStr, Subscription? subscription)
         {
