@@ -1,9 +1,9 @@
 ﻿namespace GetNews.Core.DomainModel
 {
-    public enum SignUpResultType
+    public enum SignUpError
     {
-        SignedUp,
         InvalidEmailAddress,
-        AlreadySubscribed
+        AlreadySubscribed,
+        Unknown
     }
 }

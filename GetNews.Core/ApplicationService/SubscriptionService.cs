@@ -9,19 +9,22 @@ namespace GetNews.Core.ApplicationService
             if (subscription == null)
             {
                 var emailAddress = new EmailAddress(emailAddressStr);
-                if (!emailAddress.IsValid()) return new SignUpResult(SignUpResultType.InvalidEmailAddress);
+                if (!emailAddress.IsValid()) return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
                 subscription = new Subscription(emailAddressStr);
             }
 
-            return subscription.Status switch
+            switch (subscription.Status)
             {
-                SubscriptionStatus.Verified 
-                    => new SignUpResult(SignUpResultType.AlreadySubscribed),
-                SubscriptionStatus.SignedUp or SubscriptionStatus.Unsubscribed
-                    => new SignUpResult(SignUpResultType.SignedUp, subscription,
-                        Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode.Value))
-
-            };
+                case SubscriptionStatus.Verified:
+                    return SignUpResult.Fail(SignUpError.AlreadySubscribed);
+                case SubscriptionStatus.SignedUp or SubscriptionStatus.Unsubscribed:
+                {
+                    var email = Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode.Value);
+                    return SignUpResult.Ok(subscription, email);
+                }
+                default:
+                    return SignUpResult.Fail(SignUpError.Unknown);
+            }
         }
     }
 }
