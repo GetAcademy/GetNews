@@ -1,18 +1,20 @@
-﻿namespace GetNews.Core.DomainModel
+﻿//  Initializing the Confirmation Email
+
+namespace GetNews.Core.DomainModel
 {
     public class Email
     {
-        public string FromEmailAddress { get; }
-        public string ToEmailAddress { get; }
-        public string Subject { get; }
         public string Body { get; }
+        public string Subject { get; }
+        public string ToEmailAddress { get; }
+        public string FromEmailAddress { get; }
 
         public Email(string fromEmailAddress, string toEmailAddress, string subject, string body)
         {
-            FromEmailAddress = fromEmailAddress;
-            ToEmailAddress = toEmailAddress;
-            Subject = subject;
             Body = body;
+            Subject = subject;
+            ToEmailAddress = toEmailAddress;
+            FromEmailAddress = fromEmailAddress;
         }
         public static Email CreateConfirmEmail(string emailAddress, Guid code)
         {

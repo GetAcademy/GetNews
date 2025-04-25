@@ -1,4 +1,6 @@
-﻿namespace GetNews.Core.DomainModel
+﻿//  ??
+
+namespace GetNews.Core.DomainModel
 {
     public class EmailAddress
     {

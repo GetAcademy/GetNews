@@ -1,4 +1,6 @@
-﻿namespace GetNews.API.ApiModel
+﻿//  Model for subscription sign-up
+
+namespace GetNews.API.ApiModel
 {
     public class SubscriptionSignUp
     {
