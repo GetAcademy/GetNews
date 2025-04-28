@@ -36,6 +36,7 @@
         async function subscribe() {
             const data = await callApi('post', { EmailAddress: model.email })
             model.message = JSON.stringify(data);
+            console.log("hello")
             updateView();
         }
         async function verify() {
