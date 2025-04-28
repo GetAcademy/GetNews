@@ -1,0 +1,24 @@
+index 
+  subscribe()  kall på API ("post", email) 
+
+SubscriptionController
+  sjekk om brukeren eksisterer i 
+  SubscriptionFileRepository.LoadSubscription(), 
+  hvis ikke, lag den
+
+SubscriptionService
+  signup(email, subscription) 
+
+Subscription
+ Subscription(1,2,3...), send email til mottaker 
+
+DummyEmailService 
+  send(mail)  CreateDirGetFile(email, plassering)
+
+index
+  mottaker skriver inn koden
+
+Subscription
+  verify(kode) 
+
+SubscriptionRepository

@@ -1,4 +1,7 @@
-﻿using GetNews.Core.DomainModel;
+﻿//  
+
+//  Importing necessary namespaces
+using GetNews.Core.DomainModel;
 
 public class SignUpResult
 {
