@@ -38,6 +38,16 @@
             model.message = JSON.stringify(data);
             updateView();
         }
+        async function verify() {
+            const data = await callApi('post', { EmailAddress: model.email })
+
+            if (model.code == data.VerificationCode) {
+                console.log("ja")
+            } else {
+                console.log("nei")
+            }
+            updateView();
+        }
 
         async function callApi(method, obj) {
             const response = await fetch('/api/subscription', {
