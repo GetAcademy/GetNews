@@ -35,7 +35,7 @@
 
         async function subscribe() {
             const data = await callApi('post', { EmailAddress: model.email })
-            model.message = data.result;
+            model.message = JSON.stringify(data);
             updateView();
         }
 

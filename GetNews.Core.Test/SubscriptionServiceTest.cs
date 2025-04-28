@@ -48,5 +48,23 @@ namespace GetNews.Core.Test
             Assert.That(signUpResult.Email, Is.InstanceOf<Email>());
             Assert.That(signUpResult.Subscription, Is.InstanceOf<Subscription>());
         }
+
+        [Test]
+        public void TestSignUpWithExistingVerified()
+        {
+            var emailAddress = new EmailAddress("a@bb.com");
+            var subscription = new Subscription(
+                emailAddress.Value, 
+                SubscriptionStatus.SignedUp,
+                Guid.NewGuid(),
+                true,
+               lastStatusChange:new DateOnly(2025, 4, 1)
+                );
+            var signUpResult = SubscriptionService.SignUp(emailAddress.Value, subscription);
+
+            //Assert.That(signUpResult.Type, Is.EqualTo(SignUpError.SignedUp));
+            Assert.That(signUpResult.Email, Is.InstanceOf<Email>());
+            Assert.That(signUpResult.Subscription, Is.InstanceOf<Subscription>());
+        }
     }
 }
