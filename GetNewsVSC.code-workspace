@@ -8,9 +8,32 @@
 
 	"extensions": {
 		"recommendations": [
+			"formulahendry.dotnet-test-explorer",
+			"ms-dotnettools.vscode-dotnet-pack",
 			"ms-dotnettools.vscode-dotnet-runtime",
+			"ms-dotnettools.csdevkit",
+			"aaron-bond.better-comments",
+			"bigmodelingtools.umldiagram",
 			"ms-dotnettools.csharp",
-			"ms-dotnettools.csdevkit"
+			"codechecker.vscode-codechecker",
+			"pranaygp.vscode-css-peek",
+			"ms-azuretools.vscode-docker",
+			"docker.docker",
+			"mikestead.dotenv",
+			"tobermory.es6-string-html",
+			"dbaeumer.vscode-eslint",
+			"github.codespaces",
+			"github.remotehub",
+			"eamodio.gitlens",
+			"stephanvs.dot",
+			"sidthesloth.html5-boilerplate",
+			"ecmel.vscode-html-css",
+			"ms-dotnettools.vscodeintellicode-csharp",
+			"zignd.html-css-class-completion",
+			"ionide.ionide-fsharp",
+			"sburg.vscode-javascript-booster",
+			"christian-kohler.path-intellisense",
+			"josefpihrt-vscode.roslynator"
 		]
 	},
 }
