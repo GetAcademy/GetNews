@@ -26,9 +26,11 @@
 
         public void ChangeStatus(SubscriptionStatus status)
         {
+            //  Changes the status of the subscription
+
             Status = status;
-            IsVerified = status == SubscriptionStatus.Verified;
             LastStatusChange = DateOnly.FromDateTime(DateTime.Now);
+            IsVerified = status == SubscriptionStatus.Verified || status == SubscriptionStatus.Unsubscribed;
         }
 
         public void Verify(Guid verificationCode)
@@ -42,18 +44,18 @@
                 throw new InvalidOperationException("Invalid verification code.");
             }
             
-            if (IsVerified)
+            //  Ensure that the subscription is not already verified
+            if (!IsVerified)
             {
-                throw new InvalidOperationException("Already verified.");
+                //  Change the status to verified
+            ChangeStatus(SubscriptionStatus.Verified);
             }
 
-
-            //  Change the status to verified
-            ChangeStatus(SubscriptionStatus.Verified);
+            
             
         }
 
-        public void UnsubScribe()
+        public void UnSubscribe()
         {
             // -- Requires a test to be written
             // Changes the status to unsubscribed
