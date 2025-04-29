@@ -35,7 +35,7 @@
         {
             // -- Requires a test to be written
 
-            // CEnsrue the validation code is not correct
+            // Ensure the validation code is not correct
             if (VerificationCode != verificationCode)
             {
                 throw new InvalidOperationException("Invalid verification code.");
