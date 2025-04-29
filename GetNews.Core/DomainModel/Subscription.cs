@@ -19,6 +19,7 @@
             EmailAddress = emailAddress;
             Status = status;
             IsVerified = isVerified;
+
             if (!isVerified) VerificationCode = verificationCode ?? Guid.NewGuid();
             LastStatusChange = lastStatusChange ?? DateOnly.FromDateTime(DateTime.Now);
         }
@@ -26,13 +27,29 @@
         public void ChangeStatus(SubscriptionStatus status)
         {
             Status = status;
+            IsVerified = status == SubscriptionStatus.Verified;
             LastStatusChange = DateOnly.FromDateTime(DateTime.Now);
         }
 
         public void Verify(Guid verificationCode)
         {
-            IsVerified = verificationCode == VerificationCode;
+            // -- Requires a test to be written
+
+            // CEnsrue the validation code is not correct
+            if (VerificationCode != verificationCode)
+            {
+                throw new InvalidOperationException("Invalid verification code.");
+            }
+
+            //  Change the status to verified
+            ChangeStatus(SubscriptionStatus.Verified);
+            
         }
 
+        public void UnsubScribe()
+        {
+            // x -> Not tested
+            // Changes the status to unsubscribed
+            ChangeStatus(SubscriptionStatus.Unsubscribed);        }
     }
 }
