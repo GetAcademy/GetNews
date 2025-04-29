@@ -34,12 +34,19 @@
         public void Verify(Guid verificationCode)
         {
             // -- Requires a test to be written
+            //  Check for throw exceptions
 
             // Ensure the validation code is not correct
             if (VerificationCode != verificationCode)
             {
                 throw new InvalidOperationException("Invalid verification code.");
             }
+            
+            if (IsVerified)
+            {
+                throw new InvalidOperationException("Already verified.");
+            }
+
 
             //  Change the status to verified
             ChangeStatus(SubscriptionStatus.Verified);
@@ -48,7 +55,7 @@
 
         public void UnsubScribe()
         {
-            // x -> Not tested
+            // -- Requires a test to be written
             // Changes the status to unsubscribed
             ChangeStatus(SubscriptionStatus.Unsubscribed);        }
     }

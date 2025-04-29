@@ -52,6 +52,10 @@ namespace GetNews.Core.Test
         [Test]
         public void TestSignUpWithExistingVerified()
         {
+            // Check for throw exceptions
+            // Check for the status to be verified
+            // Check for the last status change to be today
+            // Check for 
             var emailAddress = new EmailAddress("a@bb.com");
             var subscription = new Subscription(
                 emailAddress.Value, 
@@ -60,8 +64,10 @@ namespace GetNews.Core.Test
                 true,
                lastStatusChange:new DateOnly(2025, 4, 1)
                 );
+
             var signUpResult = SubscriptionService.SignUp(emailAddress.Value, subscription);
 
+            //  Check for boolean to be true
             //Assert.That(signUpResult.Type, Is.EqualTo(SignUpError.SignedUp));
             Assert.That(signUpResult.Email, Is.InstanceOf<Email>());
             Assert.That(signUpResult.Subscription, Is.InstanceOf<Subscription>());
