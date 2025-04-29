@@ -59,6 +59,7 @@
         {
             // -- Requires a test to be written
             // Changes the status to unsubscribed
-            ChangeStatus(SubscriptionStatus.Unsubscribed);        }
+            ChangeStatus(SubscriptionStatus.Unsubscribed);        
+        }
     }
 }
