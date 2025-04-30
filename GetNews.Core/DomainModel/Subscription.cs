@@ -1,11 +1,13 @@
-﻿namespace GetNews.Core.DomainModel
+﻿// GetNews Subscription Service
+
+namespace GetNews.Core.DomainModel
 {
     public class Subscription
     {
         public string EmailAddress { get; }
         public SubscriptionStatus Status { get; private set; }
         public DateOnly LastStatusChange { get; private set; }
-        public Guid? VerificationCode { get; }
+        public Guid? VerificationCode { get; private set;}
         public bool IsVerified { get; private set; }
 
         public Subscription(
@@ -22,6 +24,7 @@
 
             if (!isVerified) VerificationCode = verificationCode ?? Guid.NewGuid();
             LastStatusChange = lastStatusChange ?? DateOnly.FromDateTime(DateTime.Now);
+        
         }
 
         public void ChangeStatus(SubscriptionStatus status)
@@ -39,25 +42,17 @@
             //  Check for throw exceptions
 
             // Ensure the validation code is not correct
-            if (VerificationCode != verificationCode)
-            {
-                throw new InvalidOperationException("Invalid verification code.");
-            }
+            if (VerificationCode != verificationCode) {throw new InvalidOperationException("Invalid verification code.");}
             
-            //  Ensure that the subscription is not already verified
-            if (!IsVerified)
-            {
-                //  Change the status to verified
-            ChangeStatus(SubscriptionStatus.Verified);
-            }
+            //  Changes status to verified
+            if (!IsVerified) {ChangeStatus(SubscriptionStatus.Verified);}
 
-            
-            
         }
 
         public void UnSubscribe()
         {
             // -- Requires a test to be written
+
             // Changes the status to unsubscribed
             ChangeStatus(SubscriptionStatus.Unsubscribed);        
         }
