@@ -11,8 +11,8 @@ namespace GetNews.Core.Test
             var signUpResult = SubscriptionService.SignUp("a@bb.com", null);
 
             //Assert.That(signUpResult.Type, Is.EqualTo(SignUpError.SignedUp));
-            Assert.That(signUpResult.Email, Is.InstanceOf<Email>());
-            Assert.That(signUpResult.Subscription, Is.InstanceOf<Subscription>());
+            InstanceCheck(signUpResult);
+
         }
 
         [Test]
@@ -20,9 +20,10 @@ namespace GetNews.Core.Test
         {
             var signUpResult = SubscriptionService.SignUp("abb.com", null);
 
+            //  Ensure the instance is Null
+            NullCheck(signUpResult);
+
             //Assert.That(signUpResult.Type, Is.EqualTo(SignUpError.InvalidEmailAddress));
-            Assert.That(signUpResult.Email, Is.Null);
-            Assert.That(signUpResult.Subscription, Is.Null);
         }
 
         [Test]
@@ -32,9 +33,12 @@ namespace GetNews.Core.Test
             var subscription = new Subscription(emailAddress.Value, SubscriptionStatus.Verified);
             var signUpResult = SubscriptionService.SignUp(emailAddress.Value, subscription);
 
+            //  Ensure the instance is Null
+            NullCheck(signUpResult);
+
+            // Check for throw exceptions
             //Assert.That(signUpResult.Type, Is.EqualTo(SignUpError.AlreadySubscribed));
-            Assert.That(signUpResult.Email, Is.Null);
-            Assert.That(signUpResult.Subscription, Is.Null);
+            
         }
 
         [Test]
@@ -44,9 +48,9 @@ namespace GetNews.Core.Test
             var subscription = new Subscription(emailAddress.Value, SubscriptionStatus.SignedUp);
             var signUpResult = SubscriptionService.SignUp(emailAddress.Value, subscription);
 
-            //Assert.That(signUpResult.Type, Is.EqualTo(SignUpError.SignedUp));
-            Assert.That(signUpResult.Email, Is.InstanceOf<Email>());
-            Assert.That(signUpResult.Subscription, Is.InstanceOf<Subscription>());
+            //  Ensures the type of Email and Subscription
+            InstanceCheck(signUpResult);
+
         }
 
         [Test]
@@ -55,7 +59,6 @@ namespace GetNews.Core.Test
             // Check for throw exceptions
             // Check for the status to be verified
             // Check for the last status change to be today
-            // Check for 
             var emailAddress = new EmailAddress("a@bb.com");
             var subscription = new Subscription(
                 emailAddress.Value, 
@@ -67,10 +70,43 @@ namespace GetNews.Core.Test
 
             var signUpResult = SubscriptionService.SignUp(emailAddress.Value, subscription);
 
+            //  Ensures the type of Email and Subscription
+            InstanceCheck(signUpResult);
+
             //  Check for boolean to be true
             //Assert.That(signUpResult.Type, Is.EqualTo(SignUpError.SignedUp));
-            Assert.That(signUpResult.Email, Is.InstanceOf<Email>());
-            Assert.That(signUpResult.Subscription, Is.InstanceOf<Subscription>());
         }
+
+        private static void NullCheck(SignUpResult subscription)
+        {
+            /*
+                *   Helper function to ensure the type is null
+
+                *   @param : Subscription type of SignUpResults 
+            */
+
+            using (Assert.EnterMultipleScope())
+            {
+                
+                Assert.That(subscription.Email, Is.Null);
+                Assert.That(subscription.Subscription, Is.Null);
+            }
+        }
+        
+        private static void InstanceCheck(SignUpResult subscription)
+        {
+            /*
+                *   Helper function to ensures the type of Email and Subscription
+
+                *   @param : Subscription type of SignUpResults 
+            */
+
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(subscription.Email, Is.InstanceOf<Email>());
+                Assert.That(subscription.Subscription, Is.InstanceOf<Subscription>());
+            }
+        }
+    
     }
 }
