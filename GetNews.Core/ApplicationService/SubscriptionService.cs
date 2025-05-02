@@ -1,4 +1,5 @@
-﻿using GetNews.Core.DomainModel;
+﻿//  SIgnup process for a subscription
+using GetNews.Core.DomainModel;
 
 namespace GetNews.Core.ApplicationService
 {
@@ -25,9 +26,10 @@ namespace GetNews.Core.ApplicationService
             {
                 case SubscriptionStatus.Verified:
                     return SignUpResult.Fail(SignUpError.AlreadySubscribed);
+
                 case SubscriptionStatus.SignedUp or SubscriptionStatus.Unsubscribed:
                 {
-                    var email = Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode.Value);
+                    var email = Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode);
                     return SignUpResult.Ok(subscription, email);
                 }
                 default:
