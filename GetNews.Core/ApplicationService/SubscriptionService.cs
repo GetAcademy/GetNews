@@ -6,6 +6,14 @@ namespace GetNews.Core.ApplicationService
     {
         public static SignUpResult SignUp(string emailAddressStr, Subscription? subscription)
         {
+            /*
+                *   When a user signs up for a subscription, the system will check if the email address is valid.
+                *   If the email address is valid, the system will check if the user is already subscribed.
+
+                *   @param emailAddressStr: The email address of the user
+                *   @param subscription: The subscription object of the user
+                *   @return: A SignUpResult object containing the result of the sign-up process
+            */
             if (subscription == null)
             {
                 var emailAddress = new EmailAddress(emailAddressStr);
