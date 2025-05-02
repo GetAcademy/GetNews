@@ -122,9 +122,6 @@ namespace GetNews.Core.Test
                 Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Verified));
              
             }
-
-            //  Ensures the type of Email and Subscription
-            //InstanceCheck(subscription);
         }
 
         [Test]
