@@ -131,6 +131,35 @@ namespace GetNews.Core.Test
                 Assert.That(subscription.Subscription, Is.InstanceOf<Subscription>());
             }
         }
-    
+        [Test]
+        public void Verify_ShouldReturnCodeMismatch_WhenCodeIsWrong()
+        {
+            var correctCode = Guid.NewGuid();
+            var wrongCode = Guid.NewGuid();
+            var email = "test@example.com";
+            var subscription = new Subscription(email, SubscriptionStatus.SignedUp);
+            subscription.SetVerificationCode(correctCode);
+
+            var result = SubscriptionService.Verify(email, subscription, wrongCode.ToString());
+
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.Error, Is.EqualTo(VerificationError.CodeMismatch));
+        }
+
+
+        [Test]
+        public void Verify_ShouldReturnSuccess_WhenCodeMatches()
+        {
+            var code = Guid.NewGuid();
+            var email = "test@example.com";
+            var subscription = new Subscription(email, SubscriptionStatus.SignedUp);
+            subscription.SetVerificationCode(code);
+
+            var result = SubscriptionService.Verify(email, subscription, code.ToString());
+
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.Error, Is.Null);
+        }
+
     }
 }

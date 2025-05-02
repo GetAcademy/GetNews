@@ -58,5 +58,9 @@ namespace GetNews.Core.DomainModel
             // Changes the status to unsubscribed
             ChangeStatus(SubscriptionStatus.Unsubscribed);
         }
+        public void SetVerificationCode(Guid code)
+        {
+            VerificationCode = code;
+        }
     }
 }
