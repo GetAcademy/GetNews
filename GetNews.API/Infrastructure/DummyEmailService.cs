@@ -37,14 +37,14 @@ namespace GetNews.API.Infrastructure
                 @param emailAddress: The email address to be used for naming the file.
                 @param basePath: The base path where the email will be saved.
 
-                A functon to create a directory and get the file name for the email.
+                A functon to create a directory of sent emails and get the file name for the email.
              */
 
-            var dir = basePath + "\\" + EmailsFolderName;
-
+             var dir = basePath + "/" + EmailsFolderName;
+            
             Directory.CreateDirectory(dir);
-
-            var fileName = dir + "\\" + emailAddress + ".json";
+            
+            var fileName = dir + "/" + emailAddress + ".json";
 
             return fileName;
         }
