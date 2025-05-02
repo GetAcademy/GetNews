@@ -97,7 +97,7 @@ namespace GetNews.Core.Test
             
             Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.SignedUp));
 
-            //  Ensures the type of Email and Subscription
+            //  Ensures the Integery and type of Email and Subscription
             InstanceCheck(signUpResult);
         }
 
