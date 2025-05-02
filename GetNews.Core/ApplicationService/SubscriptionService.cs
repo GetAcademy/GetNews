@@ -36,20 +36,5 @@ namespace GetNews.Core.ApplicationService
                     return SignUpResult.Fail(SignUpError.Unknown);
             }
         }
-        public static VerificationResult Verify(string emailAdressStr, Subscription? subscription, string code)
-        {
-            if (subscription == null)
-                return VerificationResult.Fail(VerificationError.SubscriptionNotFound);
-            if (!Guid.TryParse(code, out var parsedCode))
-                return VerificationResult.Fail(VerificationError.InvalidCodeFormat);
-            if (!subscription.VerificationCode.HasValue)
-                return VerificationResult.Fail(VerificationError.VerificationCodeMissing);
-            if (subscription.EmailAddress != emailAdressStr)
-                return VerificationResult.Fail(VerificationError.EmailMismatch);
-            if (subscription.VerificationCode.Value != parsedCode)
-                return VerificationResult.Fail(VerificationError.CodeMismatch);
-
-            return VerificationResult.Success();
-        }
     }
 }
