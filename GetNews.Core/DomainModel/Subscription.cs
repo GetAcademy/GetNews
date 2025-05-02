@@ -29,7 +29,7 @@ namespace GetNews.Core.DomainModel
 
         }
 
-        public void ChangeStatus(SubscriptionStatus status)
+        private void ChangeStatus(SubscriptionStatus status)
         {
             //  Changes the status of the subscription
 
@@ -58,6 +58,8 @@ namespace GetNews.Core.DomainModel
             // Changes the status to unsubscribed
             ChangeStatus(SubscriptionStatus.Unsubscribed);
         }
+        
+
         public void SetVerificationCode(Guid code)
         {
             VerificationCode = code;
