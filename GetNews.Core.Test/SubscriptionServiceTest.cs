@@ -100,6 +100,7 @@ namespace GetNews.Core.Test
             Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Unsubscribed));
 
         }
+        
         private static void NullCheck(SignUpResult subscription)
         {
             /*
