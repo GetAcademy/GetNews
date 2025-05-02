@@ -45,7 +45,7 @@
         }
         async function verify() {
             // sjekker om koden er riktig (senere skal vi oppdatere databasen med verifisert=true)
-            const data = await callApi('post', { EmailAddress: model.email })
+            const data = await callApi('post', { EmailAddress: model.email, Token: model.code })
             // her skal vi oppdatere databasen med verifisert=true
             // bytt ut post med fetch eller get eller hva som er riktig
 
