@@ -5,6 +5,8 @@ namespace GetNews.Core.Test
 {
     public class SubscriptionServiceTest
     {
+        private EmailAddress userEmail = new EmailAddress("no-replay@getAcademy.no");
+
         [Test]
         public void TestNewSignUp()
         {
@@ -29,9 +31,8 @@ namespace GetNews.Core.Test
         [Test]
         public void TestSignUpAlreadySubscribed()
         {
-            var emailAddress = new EmailAddress("a@bb.com");
-            var subscription = new Subscription(emailAddress.Value, SubscriptionStatus.Verified);
-            var signUpResult = SubscriptionService.SignUp(emailAddress.Value, subscription);
+            var subscription = new Subscription(userEmail.Value, SubscriptionStatus.Verified);
+            var signUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
 
             //  Ensure the instance is Null
             NullCheck(signUpResult);
@@ -44,9 +45,8 @@ namespace GetNews.Core.Test
         [Test]
         public void TestSignUpWithExistingUnVerified()
         {
-            var emailAddress = new EmailAddress("a@bb.com");
-            var subscription = new Subscription(emailAddress.Value, SubscriptionStatus.SignedUp);
-            var signUpResult = SubscriptionService.SignUp(emailAddress.Value, subscription);
+            var subscription = new Subscription(userEmail.Value, SubscriptionStatus.SignedUp);
+            var signUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
 
             //  Ensures the type of Email and Subscription
             InstanceCheck(signUpResult);
@@ -59,7 +59,29 @@ namespace GetNews.Core.Test
             // Check for throw exceptions
             // Check for the status to be verified
             // Check for the last status change to be today
-            var emailAddress = new EmailAddress("a@bb.com");
+
+            var subscription = new Subscription(
+                "a@b.com", 
+                SubscriptionStatus.SignedUp,
+                Guid.NewGuid(),
+                true,
+               lastStatusChange:new DateOnly(2025, 4, 1)
+                );
+
+            var signUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
+
+            //  Verify the subscription to ensure the status is verified
+            //subscription.Verify(subscription.VerificationCode);
+            
+            //Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Verified));
+
+            //  Ensures the type of Email and Subscription
+            InstanceCheck(signUpResult);
+        }
+        [Test]
+        public void TestExistingUserUnsubscribed()
+        {
+                        var emailAddress = new EmailAddress("a@bb.com");
             var subscription = new Subscription(
                 emailAddress.Value, 
                 SubscriptionStatus.SignedUp,
@@ -72,11 +94,12 @@ namespace GetNews.Core.Test
 
             //  Ensures the type of Email and Subscription
             InstanceCheck(signUpResult);
+            
+            //  Verify the subscription to ensure the status is unsubscribed
+            subscription.UnSubscribe();
+            Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Unsubscribed));
 
-            //  Check for boolean to be true
-            //Assert.That(signUpResult.Type, Is.EqualTo(SignUpError.SignedUp));
         }
-
         private static void NullCheck(SignUpResult subscription)
         {
             /*
