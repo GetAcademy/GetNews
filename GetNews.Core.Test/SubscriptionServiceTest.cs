@@ -57,15 +57,12 @@ namespace GetNews.Core.Test
         public void Test_Confirmation()
         {
 
-            var subscription = new Subscription(
-                userEmail.Value, 
-                SubscriptionStatus.SignedUp,
-                Guid.NewGuid(),
-                false,
-               lastStatusChange:new DateOnly(2025, 4, 1)
-                );
+            var subscription = new Subscription(userEmail.Value, SubscriptionStatus.SignedUp, Guid.NewGuid(), false, lastStatusChange:new DateOnly(2025, 4, 1));
 
             var signUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
+
+            //  Ensures the type of Email and Subscription
+            InstanceCheck(signUpResult);
             
             //  Verify the subscription to ensure the status is verified
             var confirm = SubscriptionService.ConfirmSubscription(userEmail.Value, subscription.VerificationCode, subscription);
@@ -78,8 +75,6 @@ namespace GetNews.Core.Test
                 Assert.That(confirm.Error, Is.EqualTo(SignUpResult.Ok(subscription, null).Error));
             }
 
-            //  Ensures the integerty type of Email and Subscription
-            InstanceCheck(signUpResult);
         }
 
         [Test]
@@ -123,6 +118,11 @@ namespace GetNews.Core.Test
                 true,
                lastStatusChange:new DateOnly(2025, 4, 1)
                 );
+            var signUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
+
+            //  Ensures the type of Email and Subscription
+            InstanceCheck(signUpResult);
+
 
             //  Verify the subscription to ensure the status is verified
             var confirm = SubscriptionService.ConfirmSubscription(userEmail.Value, subscription.VerificationCode, subscription);
@@ -163,21 +163,20 @@ namespace GetNews.Core.Test
         {
             var subscription = new Subscription(
                 userEmail.Value, 
-                SubscriptionStatus.SignedUp,
+                SubscriptionStatus.Verified,
                 Guid.NewGuid(),
                 true,
                lastStatusChange:new DateOnly(2025, 4, 1)
                 );
-
-            var signUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
-
-            //  Ensures the type of Email and Subscription
-            InstanceCheck(signUpResult);
             
             //  Verify the subscription to ensure the status is unsubscribed
-            var unsubscribed = SubscriptionService.ConfirmUnSubscription(userEmail.Value, subscription);
+            SubscriptionService.ConfirmUnSubscription(userEmail.Value, subscription);
 
-            Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Unsubscribed));
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(subscription.IsVerified, Is.False);
+                Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Unsubscribed));
+            }
 
         }
 

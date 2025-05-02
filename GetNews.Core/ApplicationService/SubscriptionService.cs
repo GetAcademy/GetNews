@@ -49,21 +49,13 @@ namespace GetNews.Core.ApplicationService
                 *   @return: A SignUpResult object containing the result of the sign-up process
             */
 
-            try
-            {
-                if (subscription == null) return SignUpResult.Fail(SignUpError.Unknown);
-            }
-            catch (NullReferenceException)
-            {
-                return SignUpResult.Fail(SignUpError.Unknown);
-            }
             var email = new EmailAddress(userMail);
             if (!email.IsValid()) return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
+            
+            if (subscription == null) return SignUpResult.Fail(SignUpError.Unknown);
 
-                        // Ensure the validation code is not correct
-            if (subscription.VerificationCode != verificationCode){
-                return SignUpResult.Fail(SignUpError.Unknown);
-            }
+            // Ensure the validation code is not correct
+            if (subscription.VerificationCode != verificationCode) return SignUpResult.Fail(SignUpError.Unknown);
 
             //  Ensure the status is not verified, then Change the status
             if (subscription.Status == SubscriptionStatus.Verified) return SignUpResult.Fail(SignUpError.AlreadySubscribed);
@@ -89,8 +81,13 @@ namespace GetNews.Core.ApplicationService
                 *   @return: A SignUpResult object containing the result of the sign-up process            */
 
             if (subscription == null) return SignUpResult.Fail(SignUpError.Unknown);
-            if (subscription.EmailAddress == userMail) subscription.UnSubscribe();
-            return SignUpResult.Ok(subscription, null);
+            if (subscription.EmailAddress == userMail)
+            {
+                subscription.UnSubscribe();
+                return SignUpResult.Ok(subscription, null);
+            }
+
+            return SignUpResult. Fail(SignUpError.Unknown);
         }
     }
 }
