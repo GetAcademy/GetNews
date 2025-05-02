@@ -36,16 +36,19 @@
         }
 
         async function subscribe() {
+            // Lager brukeren i databasen (senere skal sende e-post med verifiseringskode) 
             const data = await callApi('post', { EmailAddress: model.email })
             model.message = JSON.stringify(data);
             console.log(model)
+            // her skal vi sende e-post med verifiseringskode
             updateView();
         }
         async function verify() {
+            // sjekker om koden er riktig (senere skal vi oppdatere databasen med verifisert=true)
             const data = await callApi('post', { EmailAddress: model.email })
             console.log(model.code, data.VerificationCode);
             model.code == data.VerificationCode ? console.log("ja") : console.log("nei")
-
+            // her skal vi oppdatere databasen med verifisert=true
             updateView();
         }
 
