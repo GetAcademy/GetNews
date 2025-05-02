@@ -1,9 +1,11 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <title></title>
 </head>
+
 <body>
     <div id="app"></div>
     <script>
@@ -29,24 +31,24 @@
                     /><br/>
                 <button onclick="subscribe()">Abonner på nyhetsbrev</button>
                 <button onclick="verify()">Bekreft nyhetsbrev</button>
-                <div style="color:orange;">${model.message??''}</div>
+                <div style="color:orange;">${model.message ?? ''}</div>
             `;
         }
 
         async function subscribe() {
+            // Lager brukeren i databasen (senere skal sende e-post med verifiseringskode) 
             const data = await callApi('post', { EmailAddress: model.email })
             model.message = JSON.stringify(data);
-            console.log("hello")
+            console.log(model)
+            // her skal vi sende e-post med verifiseringskode
             updateView();
         }
         async function verify() {
+            // sjekker om koden er riktig (senere skal vi oppdatere databasen med verifisert=true)
             const data = await callApi('post', { EmailAddress: model.email })
-
-            if (model.code == data.VerificationCode) {
-                console.log("ja")
-            } else {
-                console.log("nei")
-            }
+            console.log(model.code, data.VerificationCode);
+            model.code == data.VerificationCode ? console.log("ja") : console.log("nei")
+            // her skal vi oppdatere databasen med verifisert=true
             updateView();
         }
 
@@ -63,4 +65,5 @@
 
     </script>
 </body>
+
 </html>
