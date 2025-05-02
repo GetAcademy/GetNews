@@ -7,7 +7,7 @@ namespace GetNews.Core.DomainModel
         public string EmailAddress { get; }
         public SubscriptionStatus Status { get; private set; }
         public DateOnly LastStatusChange { get; private set; }
-        public Guid? VerificationCode { get; private set;}
+        public Guid? VerificationCode { get; private set; }
         public bool IsVerified { get; private set; }
 
         public Subscription(
@@ -24,7 +24,7 @@ namespace GetNews.Core.DomainModel
 
             if (!isVerified) VerificationCode = verificationCode ?? Guid.NewGuid();
             LastStatusChange = lastStatusChange ?? DateOnly.FromDateTime(DateTime.Now);
-        
+
         }
 
         public void ChangeStatus(SubscriptionStatus status)
@@ -32,29 +32,31 @@ namespace GetNews.Core.DomainModel
             //  Changes the status of the subscription
 
             Status = status;
+            IsVerified = status == SubscriptionStatus.Verified;
             LastStatusChange = DateOnly.FromDateTime(DateTime.Now);
-            IsVerified = status == SubscriptionStatus.Verified || status == SubscriptionStatus.Unsubscribed;
         }
 
-        public void Verify(Guid verificationCode)
+        public SignUpResult? Verify(Guid verificationCode)
         {
             // -- Requires a test to be written
-            //  Check for throw exceptions
 
             // Ensure the validation code is not correct
-            if (VerificationCode != verificationCode) {throw new InvalidOperationException("Invalid verification code.");}
-            
-            //  Changes status to verified
-            if (!IsVerified) {ChangeStatus(SubscriptionStatus.Verified);}
+            if (VerificationCode != verificationCode){
+                return SignUpResult.Fail(SignUpError.Unknown);
+            }
+
+            //  Ensure the status is not verified, then Change the status
+            if (!IsVerified) { ChangeStatus(SubscriptionStatus.Verified); }
+            else return SignUpResult.Fail(SignUpError.AlreadySubscribed);
+
+            return null;
 
         }
 
         public void UnSubscribe()
         {
-            // -- Requires a test to be written
-
             // Changes the status to unsubscribed
-            ChangeStatus(SubscriptionStatus.Unsubscribed);        
+            ChangeStatus(SubscriptionStatus.Unsubscribed);
         }
     }
 }
