@@ -46,11 +46,11 @@ namespace GetNews.API.Infrastructure
              * This methods creates a directory for the subscription files if it doesn't exist
              * and returns the file name for the subscription.
              */
-            var dir = basePath + "\\" + SubscriptionsFolderName;
+            var dir = basePath + "/" + SubscriptionsFolderName;
             
             Directory.CreateDirectory(dir);
             
-            var fileName = dir + "\\" + emailAddress + ".json";
+            var fileName = dir + "/" + emailAddress + ".json";
             
             return fileName;
         }
