@@ -18,9 +18,9 @@ namespace GetNews.Core.DomainModel
             DateOnly? lastStatusChange = null
             )
         {
-            EmailAddress = emailAddress;
             Status = status;
             IsVerified = isVerified;
+            EmailAddress = emailAddress;
 
             if (!isVerified) VerificationCode = Guid.NewGuid(); else VerificationCode = verificationCode;
 
@@ -40,15 +40,13 @@ namespace GetNews.Core.DomainModel
 
         public SignUpResult? Verify(Guid verificationCode)
         {
-            // -- Requires a test to be written
-
             // Ensure the validation code is not correct
             if (VerificationCode != verificationCode){
                 return SignUpResult.Fail(SignUpError.Unknown);
             }
 
             //  Ensure the status is not verified, then Change the status
-            if (!IsVerified) { ChangeStatus(SubscriptionStatus.Verified); }
+            if (!IsVerified && VerificationCode == verificationCode ) { ChangeStatus(SubscriptionStatus.Verified); }
             else return SignUpResult.Fail(SignUpError.AlreadySubscribed);
 
             return null;
