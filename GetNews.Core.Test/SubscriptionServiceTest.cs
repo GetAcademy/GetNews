@@ -54,11 +54,8 @@ namespace GetNews.Core.Test
         }
         
         [Test]
-        public void Test_Verification()
+        public void Test_Confirmation()
         {
-            // Check for throw exceptions
-            // Check for the status to be verified
-            // Check for the last status change to be today
 
             var subscription = new Subscription(
                 userEmail.Value, 
@@ -69,58 +66,95 @@ namespace GetNews.Core.Test
                 );
 
             var signUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
-
-            //  Verify the subscription to ensure the status is verified
-            subscription.Verify(subscription.VerificationCode);
             
-            Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Verified));
+            //  Verify the subscription to ensure the status is verified
+            var confirm = SubscriptionService.ConfirmSubscription(userEmail.Value, subscription.VerificationCode, subscription);
+
+            using (Assert.EnterMultipleScope())
+            {
+                
+                Assert.That(subscription.IsVerified, Is.True);
+                Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Verified));
+                Assert.That(confirm.Error, Is.EqualTo(SignUpResult.Ok(subscription, null).Error));
+            }
+
+            //  Ensures the integerty type of Email and Subscription
+            InstanceCheck(signUpResult);
+        }
+
+        [Test]
+        public void Test_Generated_verification_code()
+        {
+
+            var subscription = new Subscription(
+                userEmail.Value, 
+                SubscriptionStatus.SignedUp,
+                Guid.NewGuid(),
+                false,
+               lastStatusChange:new DateOnly(2025, 4, 1)
+                );
+
+            var signUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
+            //  Verify the subscription to ensure the status is verified
+            
+            var confirm = SubscriptionService.ConfirmSubscription(userEmail.Value, Guid.NewGuid(), subscription);
+            
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(confirm.Error, Is.EqualTo(SignUpError.Unknown));
+
+                Assert.That(subscription.IsVerified, Is.False);
+                Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.SignedUp));
+                
+            }
+            
 
             //  Ensures the type of Email and Subscription
             InstanceCheck(signUpResult);
         }
 
         [Test]
-        public void Test_Generated_varification_code()
+        public void Test_Verifed_Subscription()
         {
             var subscription = new Subscription(
                 userEmail.Value, 
                 SubscriptionStatus.SignedUp,
-                Guid.NewGuid(),
-                false,
-               lastStatusChange:new DateOnly(2025, 4, 1)
-                );
-
-            var signUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
-
-            //  Verify the subscription to ensure the status is verified
-            subscription.Verify(Guid.NewGuid());
-            
-            Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.SignedUp));
-
-            //  Ensures the Integery and type of Email and Subscription
-            InstanceCheck(signUpResult);
-        }
-
-        [Test]
-        public void Test_Verifed_Subscription()
-        {
-            //  Load the subscription with a verified status
-            var subscription = new Subscription(
-                userEmail.Value, 
-                SubscriptionStatus.Verified,
                 Guid.NewGuid(),
                 true,
                lastStatusChange:new DateOnly(2025, 4, 1)
                 );
 
             //  Verify the subscription to ensure the status is verified
-
+            var confirm = SubscriptionService.ConfirmSubscription(userEmail.Value, subscription.VerificationCode, subscription);
+            
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(subscription.IsVerified, Is.True);
-                Assert.That(subscription.VerificationCode, Is.TypeOf<Guid>());
+                Assert.That(confirm.Error, Is.EqualTo(SignUpError.AlreadySubscribed));
+                Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.SignedUp));
+                
+            }
+        }
+
+        [Test]
+        public void Test_Status_Subscription()
+        {
+            var subscription = new Subscription(
+                userEmail.Value, 
+                SubscriptionStatus.Verified,
+                Guid.NewGuid(),
+                false,
+               lastStatusChange:new DateOnly(2025, 4, 1)
+                );
+
+            //  Verify the subscription to ensure the status is verified
+            var confirm = SubscriptionService.ConfirmSubscription(userEmail.Value, subscription.VerificationCode, subscription);
+            
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(subscription.IsVerified, Is.False);
+                Assert.That(confirm.Error, Is.EqualTo(SignUpError.AlreadySubscribed));
                 Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Verified));
-             
             }
         }
 

@@ -38,19 +38,9 @@ namespace GetNews.Core.DomainModel
             LastStatusChange = DateOnly.FromDateTime(DateTime.Now);
         }
 
-        public SignUpResult? Verify(Guid verificationCode)
+        public void Verify()
         {
-            // Ensure the validation code is not correct
-            if (VerificationCode != verificationCode){
-                return SignUpResult.Fail(SignUpError.Unknown);
-            }
-
-            //  Ensure the status is not verified, then Change the status
-            if (!IsVerified && VerificationCode == verificationCode ) { ChangeStatus(SubscriptionStatus.Verified); }
-            else return SignUpResult.Fail(SignUpError.AlreadySubscribed);
-
-            return null;
-
+            ChangeStatus(SubscriptionStatus.Verified);
         }
 
         public void UnSubscribe()
