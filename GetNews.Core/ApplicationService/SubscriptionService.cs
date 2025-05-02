@@ -76,5 +76,21 @@ namespace GetNews.Core.ApplicationService
 
             return SignUpResult.Ok(subscription, null);
         }
+    
+        public static SignUpResult ConfirmUnSubscription(string userMail, Subscription subscription)
+        {
+            /*
+                *   When a user verifies their subscription, the system will check if the email address is valid.
+                *   If the email address is valid, the system will check if the user is already subscribed.
+
+                *   @param userMail: The email address of the user
+                *   @param verificationCode: The verification code of the user
+                *   @param subscription: The subscription object of the user
+                *   @return: A SignUpResult object containing the result of the sign-up process            */
+
+            if (subscription == null) return SignUpResult.Fail(SignUpError.Unknown);
+            if (subscription.EmailAddress == userMail) subscription.UnSubscribe();
+            return SignUpResult.Ok(subscription, null);
+        }
     }
 }

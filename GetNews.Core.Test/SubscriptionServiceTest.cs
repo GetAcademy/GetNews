@@ -175,7 +175,8 @@ namespace GetNews.Core.Test
             InstanceCheck(signUpResult);
             
             //  Verify the subscription to ensure the status is unsubscribed
-            subscription.UnSubscribe();
+            var unsubscribed = SubscriptionService.ConfirmUnSubscription(userEmail.Value, subscription);
+
             Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Unsubscribed));
 
         }
