@@ -12,7 +12,7 @@ namespace GetNews.Core.Test
         {
             var signUpResult = SubscriptionService.SignUp("a@bb.com", null);
 
-            //Assert.That(signUpResult.Type, Is.EqualTo(SignUpError.SignedUp));
+            Assert.That(signUpResult.Error, Is.EqualTo(SignUpError.SignedUp));
             InstanceCheck(signUpResult);
 
         }
@@ -25,7 +25,7 @@ namespace GetNews.Core.Test
             //  Ensure the instance is Null
             NullCheck(signUpResult);
 
-            //Assert.That(signUpResult.Type, Is.EqualTo(SignUpError.InvalidEmailAddress));
+            Assert.That(signUpResult.Error, Is.EqualTo(SignUpError.InvalidEmailAddress));
         }
 
         [Test]
@@ -38,7 +38,7 @@ namespace GetNews.Core.Test
             NullCheck(signUpResult);
 
             // Check for throw exceptions
-            //Assert.That(signUpResult.Type, Is.EqualTo(SignUpError.AlreadySubscribed));
+            Assert.That(signUpResult.Error, Is.EqualTo(SignUpError.AlreadySubscribed));
             
         }
 

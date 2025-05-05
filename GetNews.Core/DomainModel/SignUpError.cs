@@ -6,6 +6,7 @@ namespace GetNews.Core.DomainModel
     {
         // This enum defines various error states that can occur during the sign-up process.
 
+        SignedUp,
         InvalidEmailAddress,
         AlreadySubscribed,
         Unknown
