@@ -16,17 +16,16 @@ namespace GetNews.Core.DomainModel
             Guid verificationCode = default,
             bool isVerified = false,
             DateOnly? lastStatusChange = null
-            )
+        )
         {
+            EmailAddress = emailAddress.Trim().ToLower();
             Status = status;
             IsVerified = isVerified;
-            EmailAddress = emailAddress.Trim().ToLower();
 
-            if (!isVerified) VerificationCode = Guid.NewGuid(); else VerificationCode = verificationCode;
-
+            // 🔧 FIX: bare generer ny hvis ingen kode ble sendt inn
+            VerificationCode = verificationCode != Guid.Empty ? verificationCode : Guid.NewGuid();
 
             LastStatusChange = lastStatusChange ?? DateOnly.FromDateTime(DateTime.Now);
-
         }
 
         private void ChangeStatus(SubscriptionStatus status)
