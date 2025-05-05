@@ -9,6 +9,7 @@ namespace GetNews.Core.DomainModel
         SignedUp,
         InvalidEmailAddress,
         AlreadySubscribed,
+        InvalidVertificationCode,
         Unknown
     }
 }
