@@ -69,8 +69,6 @@ namespace GetNews.Core.ApplicationService
             
             if (subscription == null) return SignUpResult.Fail(SignUpError.Unknown);
 
-            Console.WriteLine($"[DEBUG] ConfirmSubscription: userMail={userMail}, subscription.Email={subscription.EmailAddress}, code={verificationCode}, subCode={subscription.VerificationCode}");
-
             if (subscription.IsVerified)
                 return SignUpResult.Fail(SignUpError.AlreadySubscribed);
 
@@ -78,7 +76,7 @@ namespace GetNews.Core.ApplicationService
                 return SignUpResult.Fail(SignUpError.Unknown);
 
             if (subscription.VerificationCode != verificationCode)
-                return SignUpResult.Fail(SignUpError.Unknown);
+                return SignUpResult.Fail(SignUpError.InvalidVertificationCode);
 
             subscription.Verify();
             return SignUpResult.Ok(subscription, null);
