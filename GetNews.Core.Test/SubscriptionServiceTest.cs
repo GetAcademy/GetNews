@@ -104,7 +104,6 @@ namespace GetNews.Core.Test
             var subscription_5 = new Subscription(userEmail.Value, SubscriptionStatus.SignedUp, Guid.NewGuid(), false, lastStatusChange:new DateOnly(2025, 4, 1));
 
 
-
             //  Verify the subscription to ensure the status is verified
             var confirm = SubscriptionService.ConfirmSubscription(subscription.EmailAddress, subscription.VerificationCode, subscription);
             var confirm_1 = SubscriptionService.ConfirmSubscription(subscription_1.EmailAddress, subscription_1.VerificationCode, subscription_1);

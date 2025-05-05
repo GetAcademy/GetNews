@@ -29,20 +29,21 @@ namespace GetNews.Core.ApplicationService
             if (subscription == null)
             {
                 subscription = new Subscription(emailAddressStr);
-                Console.WriteLine($"[DEBUG] Ny subscription: {subscription.EmailAddress}, kode: {subscription.VerificationCode}");
+
                 var mail = Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode);
                 return SignUpResult.Ok(subscription, mail);
             }
-
-            // Bruker eksisterer – sjekk status
-            Console.WriteLine($"[DEBUG] Eksisterende subscription: {subscription.EmailAddress}, status={subscription.Status}, kode={subscription.VerificationCode}");
-
+            
+            // When the subscriber has already signed up, the system will check if the user is already subscribed.
             switch (subscription.Status)
             {
                 case SubscriptionStatus.Verified:
                     return SignUpResult.Fail(SignUpError.AlreadySubscribed);
 
                 case SubscriptionStatus.SignedUp:
+                    return SignUpResult.Fail(SignUpError.SignedUp);
+
+
                 case SubscriptionStatus.Unsubscribed:
                     var mail = Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode);
                     return SignUpResult.Ok(subscription, mail);
@@ -63,38 +64,24 @@ namespace GetNews.Core.ApplicationService
                 *   @param subscription: The subscription object of the user
                 *   @return: A SignUpResult object containing the result of the sign-up process
             */
-
-            var email = new EmailAddress(userMail);
-            if (!email.IsValid()) return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
-            
-            if (subscription == null) return SignUpResult.Fail(SignUpError.Unknown);
-
-            if (subscription.IsVerified)
-                return SignUpResult.Fail(SignUpError.AlreadySubscribed);
-
-            if (!string.Equals(subscription.EmailAddress, userMail, StringComparison.OrdinalIgnoreCase))
-                return SignUpResult.Fail(SignUpError.Unknown);
-
-            if (subscription.VerificationCode != verificationCode)
-                return SignUpResult.Fail(SignUpError.InvalidVertificationCode);
+            if (subscription.VerificationCode != verificationCode) return SignUpResult.Fail(SignUpError.InvalidVertificationCode);
+            if (subscription.IsVerified && subscription.Status == SubscriptionStatus.Verified) return SignUpResult.Fail(SignUpError.AlreadySubscribed);
+            if (!string.Equals(subscription.EmailAddress, userMail, StringComparison.OrdinalIgnoreCase)) return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
 
             subscription.Verify();
+
             return SignUpResult.Ok(subscription, null);
         }
 
-      /*  public static SignUpResult ConfirmUnsubscription(string userMail, Subscription subscription) 
+        public static SignUpResult ConfirmUnsubscription(string userMail, Subscription subscription) 
         {
-            Console.WriteLine($"[DEBUG] Unsubscribe attempt: email={userMail}");
-            Console.WriteLine($"[DEBUG] Loaded subscription: email={subscription?.EmailAddress}, code={subscription?.VerificationCode}, status={subscription?.Status}");
-
-            if (subscription == null)
-                return SignUpResult.Fail(SignUpError.Unknown);
-            if (string.Equals(subscription.EmailAddress, userMail, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(subscription.EmailAddress, userMail, StringComparison.OrdinalIgnoreCase) && subscription.Status == SubscriptionStatus.Verified && subscription.IsVerified)
             { 
-                subscription.UnSubscribe();
+                subscription.Unsubscribe();
                 return SignUpResult.Ok(subscription, null);
             }
+
             return SignUpResult.Fail(SignUpError.Unknown);
-        }*/
+        }
     }
 }
