@@ -42,5 +42,29 @@ namespace GetNews.API
 
             return new { IsSuccess = true, SendtEmail = signUpResult.Email != null };
         }
+
+        public static async Task<object> Verify(SubscriptionVerification verification, IOptions<AppConfig> options)
+        {
+            var basePath = options.Value.BasePath;
+            var email = verification.EmailAddress;
+
+            // parse Verification Code to GUID.
+            if (!Guid.TryParse(verification.VerificationCode, out var verificationCode))
+            {
+                return new { IsSuccess = false, Error = "Invalid Verification code format" };
+            }
+
+            var subscription = await SubscriptionFileRepository.LoadSubscription(email, basePath);
+            var result = SubscriptionService.ConfirmSubscription(email, verificationCode, subscription);
+
+            if (!result.IsSuccess)
+            {
+                return new { IsSuccess = false, Error = result.Error.ToString() };
+
+            }
+
+            await SubscriptionFileRepository.SaveSubscription(result.Subscription, basePath);
+            return new { IsSuccess = true };
+        }
     }
 }

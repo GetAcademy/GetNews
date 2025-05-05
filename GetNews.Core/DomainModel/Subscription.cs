@@ -20,7 +20,7 @@ namespace GetNews.Core.DomainModel
         {
             Status = status;
             IsVerified = isVerified;
-            EmailAddress = emailAddress;
+            EmailAddress = emailAddress.Trim().ToLower();
 
             if (!isVerified) VerificationCode = Guid.NewGuid(); else VerificationCode = verificationCode;
 

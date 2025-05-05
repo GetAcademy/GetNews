@@ -13,8 +13,9 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseDefaultFiles();
 app.UseStaticFiles();
-app.MapPost("/api/subscription/signup", SubscriptionController.SignUp);
-app.MapPost("/api/subscription/verify"), Subscription.Verify);
+app.MapSubscriptionEndpoints();
+
+
 
 // Run the application
 app.Run();

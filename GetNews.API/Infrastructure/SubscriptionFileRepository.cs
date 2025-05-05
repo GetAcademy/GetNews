@@ -49,9 +49,11 @@ namespace GetNews.API.Infrastructure
             var dir = basePath + "/" + SubscriptionsFolderName;
             
             Directory.CreateDirectory(dir);
-            
-            var fileName = dir + "/" + emailAddress + ".json";
-            
+
+            var safeEmail = emailAddress.Trim().ToLower();
+            var fileName = Path.Combine(dir, $"{safeEmail}.json");
+
+
             return fileName;
         }
     }

@@ -18,7 +18,8 @@ namespace GetNews.Core.ApplicationService
             if (subscription == null)
             {
                 var emailAddress = new EmailAddress(emailAddressStr);
-                if (!emailAddress.IsValid()) return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
+                if (!emailAddress.IsValid()) 
+                    return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
                 subscription = new Subscription(emailAddressStr);
             }
 
@@ -54,40 +55,34 @@ namespace GetNews.Core.ApplicationService
             
             if (subscription == null) return SignUpResult.Fail(SignUpError.Unknown);
 
-            // Ensure the validation code is not correct
-            if (subscription.VerificationCode != verificationCode) return SignUpResult.Fail(SignUpError.Unknown);
+            Console.WriteLine($"[DEBUG] ConfirmSubscription: userMail={userMail}, subscription.Email={subscription.EmailAddress}, code={verificationCode}, subCode={subscription.VerificationCode}");
 
-            //  Ensure the status is not verified, then Change the status
-            if (subscription.Status == SubscriptionStatus.Verified) return SignUpResult.Fail(SignUpError.AlreadySubscribed);
+            if (subscription.IsVerified)
+                return SignUpResult.Fail(SignUpError.AlreadySubscribed);
 
-            if (!subscription.IsVerified
-                && subscription.VerificationCode == verificationCode
-                && subscription.EmailAddress == userMail) { subscription.Verify(); }
-            
-            else return SignUpResult.Fail(SignUpError.AlreadySubscribed);
+            if (!string.Equals(subscription.EmailAddress, userMail, StringComparison.OrdinalIgnoreCase))
+                return SignUpResult.Fail(SignUpError.Unknown);
 
+            if (subscription.VerificationCode != verificationCode)
+                return SignUpResult.Fail(SignUpError.Unknown);
+
+            subscription.Verify();
             return SignUpResult.Ok(subscription, null);
         }
-    
-        public static SignUpResult ConfirmUnSubscription(string userMail, Subscription subscription)
+
+        public static SignUpResult ConfirmUnsubscription(string userMail, Subscription subscription) 
         {
-            /*
-                *   When a user verifies their subscription, the system will check if the email address is valid.
-                *   If the email address is valid, the system will check if the user is already subscribed.
+            Console.WriteLine($"[DEBUG] Unsubscribe attempt: email={userMail}");
+            Console.WriteLine($"[DEBUG] Loaded subscription: email={subscription?.EmailAddress}, code={subscription?.VerificationCode}, status={subscription?.Status}");
 
-                *   @param userMail: The email address of the user
-                *   @param verificationCode: The verification code of the user
-                *   @param subscription: The subscription object of the user
-                *   @return: A SignUpResult object containing the result of the sign-up process            */
-
-            if (subscription == null) return SignUpResult.Fail(SignUpError.Unknown);
-            if (subscription.EmailAddress == userMail)
-            {
+            if (subscription == null)
+                return SignUpResult.Fail(SignUpError.Unknown);
+            if (string.Equals(subscription.EmailAddress, userMail, StringComparison.OrdinalIgnoreCase))
+            { 
                 subscription.UnSubscribe();
                 return SignUpResult.Ok(subscription, null);
             }
-
-            return SignUpResult. Fail(SignUpError.Unknown);
+            return SignUpResult.Fail(SignUpError.Unknown);
         }
     }
 }
