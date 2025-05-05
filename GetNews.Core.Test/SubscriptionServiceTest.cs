@@ -11,8 +11,6 @@ namespace GetNews.Core.Test
         public void TestNewSignUp()
         {
             var signUpResult = SubscriptionService.SignUp("a@bb.com", null);
-
-            Assert.That(signUpResult.IsSuccess, Is.True);
             
             InstanceCheck(signUpResult);
 
@@ -48,25 +46,24 @@ namespace GetNews.Core.Test
             //  Ensure the instance is Null
             NullCheck(signUpResult);
 
-            // Check for throw exceptions
-            Assert.That(signUpResult.Error, Is.EqualTo(SignUpError.AlreadySubscribed));
+            //  Assert the error is already subscribed
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(signUpResult.Error, Is.EqualTo(SignUpError.AlreadySubscribed));
+            }
+            
             
         }
 
         [Test]
         public void TestSignUpWithExistingUnVerified()
         {
-            var subscription = new Subscription(userEmail.Value, SubscriptionStatus.SignedUp);
-            
+            var subscription = new Subscription(userEmail.Value, SubscriptionStatus.SignedUp, Guid.NewGuid(), false, lastStatusChange:new DateOnly(2025, 4, 1));
+
             var signUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
-            var SecondSignUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
 
-            //  Ensures the type of Email and Subscription
-            InstanceCheck(signUpResult);
 
-            Assert.That(SecondSignUpResult.Error, Is.EqualTo(SignUpError.Unknown));
-
-            
+            Assert.That(signUpResult.Error, Is.EqualTo(SignUpError.SignedUp));
         }
         
         [Test]
@@ -75,26 +72,22 @@ namespace GetNews.Core.Test
 
             var subscription = new Subscription(userEmail.Value, SubscriptionStatus.SignedUp, Guid.NewGuid(), false, lastStatusChange:new DateOnly(2025, 4, 1));
 
-            var signUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
-
-            //  Ensures the type of Email and Subscription
-            InstanceCheck(signUpResult);
-            
             //  Verify the subscription to ensure the status is verified
-            var confirm = SubscriptionService.ConfirmSubscription(userEmail.Value, subscription.VerificationCode, subscription);
+            var confirm = SubscriptionService.ConfirmSubscription(subscription.EmailAddress, subscription.VerificationCode, subscription);
 
             using (Assert.EnterMultipleScope())
             {
-                
+                Assert.That(confirm.IsSuccess, Is.True);
                 Assert.That(subscription.IsVerified, Is.True);
                 Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Verified));
-                Assert.That(confirm.Error, Is.EqualTo(SignUpResult.Ok(subscription, null).Error));
+
+                
             }
 
         }
 
         [Test]
-        public void Test_Generated_verification_code()
+        public void TestVerificationCode()
         {
 
             var subscription = new Subscription(
@@ -106,21 +99,44 @@ namespace GetNews.Core.Test
                 );
 
             var signUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
-            var confirm = SubscriptionService.ConfirmSubscription(userEmail.Value, Guid.NewGuid(), subscription);
+            var confirm = SubscriptionService.ConfirmSubscription(subscription.EmailAddress, Guid.NewGuid(), subscription);
             
             using (Assert.EnterMultipleScope())
             {
                 
 
                 Assert.That(subscription.IsVerified, Is.False);
-                Assert.That(confirm.Error, Is.EqualTo(SignUpError.Unknown));
+                Assert.That(confirm.Error, Is.EqualTo(SignUpError.InvalidVertificationCode));
                 Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.SignedUp));
                 
             }
-            
 
-            //  Ensures the type of Email and Subscription
-            InstanceCheck(signUpResult);
+        }
+                [Test]
+        public void TestEmailAddress()
+        {
+
+            var subscription = new Subscription(
+                userEmail.Value, 
+                SubscriptionStatus.SignedUp,
+                Guid.NewGuid(),
+                false,
+               lastStatusChange:new DateOnly(2025, 4, 1)
+                );
+
+            var signUpResult = SubscriptionService.SignUp(subscription, subscription);
+            var confirm = SubscriptionService.ConfirmSubscription(subscription.EmailAddress, Guid.NewGuid(), subscription);
+            
+            using (Assert.EnterMultipleScope())
+            {
+                
+
+                Assert.That(subscription.IsVerified, Is.False);
+                Assert.That(confirm.Error, Is.EqualTo(SignUpError.InvalidVertificationCode));
+                Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.SignedUp));
+                
+            }
+
         }
 
         [Test]
@@ -134,10 +150,6 @@ namespace GetNews.Core.Test
                lastStatusChange:new DateOnly(2025, 4, 1)
                 );
             var signUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
-
-            //  Ensures the type of Email and Subscription
-            InstanceCheck(signUpResult);
-
 
             //  Verify the subscription to ensure the status is verified
             var confirm = SubscriptionService.ConfirmSubscription(userEmail.Value, subscription.VerificationCode, subscription);
@@ -206,7 +218,9 @@ namespace GetNews.Core.Test
             using (Assert.EnterMultipleScope())
             {
                 
+                
                 Assert.That(subscription.Email, Is.Null);
+                Assert.That(subscription.IsSuccess, Is.False);
                 Assert.That(subscription.Subscription, Is.Null);
             }
         }
@@ -221,6 +235,8 @@ namespace GetNews.Core.Test
 
             using (Assert.EnterMultipleScope())
             {
+                
+                Assert.That(subscription.IsSuccess, Is.True);
                 Assert.That(subscription.Email, Is.InstanceOf<Email>());
                 Assert.That(subscription.Subscription, Is.InstanceOf<Subscription>());
             }
