@@ -72,7 +72,7 @@ namespace GetNews.Core.ApplicationService
             if (subscription == null) return SignUpResult.Fail(SignUpError.Unknown);
 
             // Ensure the validation code is not correct
-            if (subscription.VerificationCode != verificationCode) return SignUpResult.Fail(SignUpError.Unknown);
+            if (subscription.VerificationCode != verificationCode) return SignUpResult.Fail(SignUpError.InvalidVertificationCode);
 
             //  Ensure the status is not verified, then Change the status
             if (subscription.Status == SubscriptionStatus.Verified) return SignUpResult.Fail(SignUpError.AlreadySubscribed);
