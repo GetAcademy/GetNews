@@ -16,13 +16,23 @@ namespace GetNews.Core.DomainModel
             ToEmailAddress = toEmailAddress;
             FromEmailAddress = fromEmailAddress;
         }
-        public static Email CreateConfirmEmail(string emailAddress, Guid code)
+        public static Email CreateConfirmEmail(string userEmail, Guid code)
         {
             return new Email(
                 "getnews@dummymail.com",
-                emailAddress,
+                userEmail,
                 "Bekreft abonnement på GET News",
                 $"Kode: {code}");
+        }
+
+        public static Email UnsubscribeEmail(string userEmail)
+        {
+            return new Email(
+                "getNews@getacademy.no",
+                userEmail,
+                "Endringer i abonnementet",
+                "Vi bekrefter at du har meldt deg av Nyhetsbrevet hos GET News.\n"
+                );
         }
     }
 }

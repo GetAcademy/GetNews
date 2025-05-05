@@ -5,6 +5,7 @@ namespace GetNews.Core.ApplicationService
 {
     public class SubscriptionService
     {
+
         public static SignUpResult SignUp(string emailAddressStr, Subscription? subscription)
         {
             /*
@@ -15,11 +16,17 @@ namespace GetNews.Core.ApplicationService
                 *   @param subscription: The subscription object of the user
                 *   @return: A SignUpResult object containing the result of the sign-up process
             */
+
+            //  Ensure the email address is not registered
+
             if (subscription == null)
             {
                 var emailAddress = new EmailAddress(emailAddressStr);
-                if (!emailAddress.IsValid()) 
-                    return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
+                
+                //  Ensure the email address is valid
+                if (!emailAddress.IsValid()) return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
+                if (emailAddressStr == "") return SignUpResult.Fail(SignUpError.Unknown);
+
                 subscription = new Subscription(emailAddressStr);
             }
 
@@ -28,11 +35,19 @@ namespace GetNews.Core.ApplicationService
                 case SubscriptionStatus.Verified:
                     return SignUpResult.Fail(SignUpError.AlreadySubscribed);
 
-                case SubscriptionStatus.SignedUp or SubscriptionStatus.Unsubscribed:
+                case SubscriptionStatus.SignedUp:
                 {
-                    var email = Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode);
-                    return SignUpResult.Ok(subscription, email);
+                    var mail = Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode);
+
+                    return SignUpResult.Ok(subscription, mail);
                 }
+                case SubscriptionStatus.Unsubscribed:
+
+                    var email = Email.UnsubscribeEmail(emailAddressStr);
+                    subscription.Unsubscribe();
+
+                    return SignUpResult.Ok(subscription, email);
+
                 default:
                     return SignUpResult.Fail(SignUpError.Unknown);
             }
