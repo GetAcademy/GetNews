@@ -43,9 +43,10 @@ namespace GetNews.Core.DomainModel
             ChangeStatus(SubscriptionStatus.Verified);
         }
 
-        public void UnSubscribe()
+        public void Unsubscribe()
         {
             // Changes the status to unsubscribed
+            
             ChangeStatus(SubscriptionStatus.Unsubscribed);
         }
         
