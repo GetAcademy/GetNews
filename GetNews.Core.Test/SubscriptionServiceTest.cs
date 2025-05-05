@@ -12,7 +12,8 @@ namespace GetNews.Core.Test
         {
             var signUpResult = SubscriptionService.SignUp("a@bb.com", null);
 
-            Assert.That(signUpResult.Error, Is.EqualTo(SignUpError.SignedUp));
+            Assert.That(signUpResult.IsSuccess, Is.True);
+            
             InstanceCheck(signUpResult);
 
         }
@@ -20,12 +21,22 @@ namespace GetNews.Core.Test
         [Test]
         public void TestSignUpInvalidEmailAddress()
         {
-            var signUpResult = SubscriptionService.SignUp("abb.com", null);
+            var singupTest = SubscriptionService.SignUp("abb@com", null);
+            var signupTest_2 = SubscriptionService.SignUp("abb.com", null);
+            
 
             //  Ensure the instance is Null
-            NullCheck(signUpResult);
+            NullCheck(singupTest);
+            NullCheck(signupTest_2);
+            
 
-            Assert.That(signUpResult.Error, Is.EqualTo(SignUpError.InvalidEmailAddress));
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(singupTest.Error, Is.EqualTo(SignUpError.InvalidEmailAddress));
+                Assert.That(signupTest_2.Error, Is.EqualTo(SignUpError.InvalidEmailAddress));
+            }
+            // Check for throw exceptions
+            
         }
 
         [Test]
@@ -46,11 +57,16 @@ namespace GetNews.Core.Test
         public void TestSignUpWithExistingUnVerified()
         {
             var subscription = new Subscription(userEmail.Value, SubscriptionStatus.SignedUp);
+            
             var signUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
+            var SecondSignUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
 
             //  Ensures the type of Email and Subscription
             InstanceCheck(signUpResult);
 
+            Assert.That(SecondSignUpResult.Error, Is.EqualTo(SignUpError.Unknown));
+
+            
         }
         
         [Test]
@@ -90,15 +106,14 @@ namespace GetNews.Core.Test
                 );
 
             var signUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
-            //  Verify the subscription to ensure the status is verified
-            
             var confirm = SubscriptionService.ConfirmSubscription(userEmail.Value, Guid.NewGuid(), subscription);
             
             using (Assert.EnterMultipleScope())
             {
-                Assert.That(confirm.Error, Is.EqualTo(SignUpError.Unknown));
+                
 
                 Assert.That(subscription.IsVerified, Is.False);
+                Assert.That(confirm.Error, Is.EqualTo(SignUpError.Unknown));
                 Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.SignedUp));
                 
             }
@@ -170,7 +185,7 @@ namespace GetNews.Core.Test
                 );
             
             //  Verify the subscription to ensure the status is unsubscribed
-            SubscriptionService.ConfirmUnSubscription(userEmail.Value, subscription);
+            SubscriptionService.ConfirmUnsubscribe(userEmail.Value, subscription);
 
             using (Assert.EnterMultipleScope())
             {
