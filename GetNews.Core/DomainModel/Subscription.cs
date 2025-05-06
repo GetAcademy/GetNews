@@ -28,22 +28,12 @@ namespace GetNews.Core.DomainModel
             LastStatusChange = lastStatusChange ?? DateOnly.FromDateTime(DateTime.Now);
         }
 
-        private void ChangeStatus(SubscriptionStatus status)
+        public void ChangeStatus(SubscriptionStatus status)
         {
             //  Changes the status of the subscription
             Status = status;
             IsVerified = status == SubscriptionStatus.Verified;
             LastStatusChange = DateOnly.FromDateTime(DateTime.Now);
-        }
-
-        public void Verify()
-        {
-            ChangeStatus(SubscriptionStatus.Verified);
-        }
-
-        public void Unsubscribe()
-        {
-            ChangeStatus(SubscriptionStatus.Unsubscribed);
         }
     }
 }

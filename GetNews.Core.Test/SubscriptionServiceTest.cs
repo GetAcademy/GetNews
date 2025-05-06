@@ -153,9 +153,9 @@ namespace GetNews.Core.Test
 
 
             //  Verify the subscription to ensure the status is verified
-            var confirm = SubscriptionService.ConfirmSubscription(subscription.EmailAddress, subscription.VerificationCode, subscription);
-            var confirm_1 = SubscriptionService.ConfirmSubscription(subscription_1.EmailAddress, subscription_1.VerificationCode, subscription_1);
-            var confirm_2 = SubscriptionService.ConfirmSubscription(subscription_2.EmailAddress, subscription_2.VerificationCode, subscription_2);
+            var confirm = SubscriptionService.Confirm(subscription.EmailAddress, subscription.VerificationCode, subscription);
+            var confirm_1 = SubscriptionService.Confirm(subscription_1.EmailAddress, subscription_1.VerificationCode, subscription_1);
+            var confirm_2 = SubscriptionService.Confirm(subscription_2.EmailAddress, subscription_2.VerificationCode, subscription_2);
 
 
             using (Assert.EnterMultipleScope())
@@ -187,9 +187,9 @@ namespace GetNews.Core.Test
 
 
             //  Verify the subscription to ensure the status is verified
-            var confirm_3 = SubscriptionService.ConfirmSubscription(subscription.EmailAddress, subscription.VerificationCode, subscription);
-            var confirm_4 = SubscriptionService.ConfirmSubscription("kake@gmail.no", subscription_1.VerificationCode, subscription_1);
-            var confirm_5 = SubscriptionService.ConfirmSubscription(subscription_2.EmailAddress, Guid.NewGuid(), subscription);
+            var confirm_3 = SubscriptionService.Confirm(subscription.EmailAddress, subscription.VerificationCode, subscription);
+            var confirm_4 = SubscriptionService.Confirm("kake@gmail.no", subscription_1.VerificationCode, subscription_1);
+            var confirm_5 = SubscriptionService.Confirm(subscription_2.EmailAddress, Guid.NewGuid(), subscription);
 
             using (Assert.EnterMultipleScope())
             {
@@ -225,10 +225,10 @@ namespace GetNews.Core.Test
             var subscription_6 = new Subscription(userEmail.Value, SubscriptionStatus.Unsubscribed, Guid.NewGuid(), false, lastStatusChange:new DateOnly(2025, 4, 1));
             var subscription_7 = new Subscription(userEmail.Value, SubscriptionStatus.Unsubscribed, Guid.NewGuid(), true, lastStatusChange:new DateOnly(2025, 4, 1));
 
-            SubscriptionService.ConfirmUnsubscription(subscription.EmailAddress, subscription);
-            SubscriptionService.ConfirmUnsubscription(subscription_3.EmailAddress, subscription_2);
-            SubscriptionService.ConfirmUnsubscription(subscription_1.EmailAddress.ToLower(), subscription_1);
-            SubscriptionService.ConfirmUnsubscription(subscription_2.EmailAddress.ToUpper(), subscription_2);
+            SubscriptionService.Unsubscribe(subscription.EmailAddress, subscription);
+            SubscriptionService.Unsubscribe(subscription_3.EmailAddress, subscription_2);
+            SubscriptionService.Unsubscribe(subscription_1.EmailAddress.ToLower(), subscription_1);
+            SubscriptionService.Unsubscribe(subscription_2.EmailAddress.ToUpper(), subscription_2);
 
             using (Assert.EnterMultipleScope())
             {

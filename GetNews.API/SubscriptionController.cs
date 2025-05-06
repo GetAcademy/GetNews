@@ -55,7 +55,7 @@ namespace GetNews.API
             }
 
             var subscription = await SubscriptionFileRepository.LoadSubscription(email, basePath);
-            var result = SubscriptionService.ConfirmSubscription(email, verificationCode, subscription);
+            var result = SubscriptionService.Confirm(email, verificationCode, subscription);
 
             if (!result.IsSuccess)
             {

@@ -53,31 +53,33 @@ namespace GetNews.Core.ApplicationService
             }
         }
     
-        public static SignUpResult ConfirmSubscription(string userMail, Guid verificationCode, Subscription subscription)
-        {
-            /*
-                *   When a user verifies their subscription, the system will check if the email address is valid.
-                *   If the email address is valid, the system will check if the user is already subscribed.
+         /// <summary>
+        /*
+            *   When a user verifies their subscription, the system will check if the email address is valid.
+            *   If the email address is valid, the system will check if the user is already subscribed.
+        */
+        /// </summary>
+        /// <param name="userMail">The email address of the user</param>
+        /// <param name="verificationCode">The verification code of the user</param>
+        /// <param name="subscription">The subscription object of the user</param>
+        /// <returns>A SignUpResult object containing the result of the sign-up process</returns>
 
-                *   @param userMail: The email address of the user
-                *   @param verificationCode: The verification code of the user
-                *   @param subscription: The subscription object of the user
-                *   @return: A SignUpResult object containing the result of the sign-up process
-            */
+        public static SignUpResult Confirm(string userMail, Guid verificationCode, Subscription subscription)
+        {
             if (subscription.VerificationCode != verificationCode) return SignUpResult.Fail(SignUpError.InvalidVertificationCode);
             if (subscription.IsVerified && subscription.Status == SubscriptionStatus.Verified) return SignUpResult.Fail(SignUpError.AlreadySubscribed);
             if (!string.Equals(subscription.EmailAddress, userMail, StringComparison.OrdinalIgnoreCase)) return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
 
-            subscription.Verify();
+            subscription.ChangeStatus(SubscriptionStatus.Verified);
 
             return SignUpResult.Ok(subscription, null);
         }
 
-        public static SignUpResult ConfirmUnsubscription(string userMail, Subscription subscription) 
+        public static SignUpResult Unsubscribe(string userMail, Subscription subscription) 
         {
             if (string.Equals(subscription.EmailAddress, userMail, StringComparison.OrdinalIgnoreCase) && subscription.Status == SubscriptionStatus.Verified && subscription.IsVerified)
             { 
-                subscription.Unsubscribe();
+                subscription.ChangeStatus(SubscriptionStatus.Unsubscribed);
                 return SignUpResult.Ok(subscription, null);
             }
 
