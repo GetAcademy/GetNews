@@ -121,7 +121,6 @@ namespace GetNews.Core.Test
         
         [TestCase (SubscriptionStatus.SignedUp, false)]
         public void TestSignUpWithExistingUnVerified(SubscriptionStatus status, bool isVerified)
-
         {
             //  Arrange test
             var subscription = new Subscription(userEmail.Value, status, null, isVerified, lastStatusChange:new DateOnly(2025, 4, 1));
@@ -196,7 +195,6 @@ namespace GetNews.Core.Test
         [TestCase(SubscriptionStatus.SignedUp, false)]
         [TestCase(SubscriptionStatus.Verified, false)]
         public void TestUnsubscribed(SubscriptionStatus status, bool isVerified)
-
         {
             //  Arrange
             var subscription = new Subscription(userEmail.Value, status, null, isVerified, lastStatusChange:new DateOnly(2025, 4, 1));
@@ -213,7 +211,6 @@ namespace GetNews.Core.Test
             {
                 Assert.That(subscription.IsVerified, Is.False);
                 Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.SignedUp));
-                
             }
         }
 

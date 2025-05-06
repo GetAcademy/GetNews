@@ -21,9 +21,7 @@ namespace GetNews.Core.DomainModel
             EmailAddress = emailAddress.Trim().ToLower();
             Status = status;
             IsVerified = isVerified;
-
             VerificationCode = verificationCode ?? Guid.NewGuid();
-
             LastStatusChange = lastStatusChange ?? DateOnly.FromDateTime(DateTime.Now);
         }
 
