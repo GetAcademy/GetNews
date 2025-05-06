@@ -9,6 +9,57 @@ namespace GetNews.Core.Test
         private EmailAddress userEmail = new EmailAddress("no-replay@getAcademy.no");
 
         [Test]
+        public void TestSignUpWithValidEmailAddress()
+        {
+
+            var hexCode = Guid.NewGuid();
+            var email = Email.CreateConfirmEmail(userEmail.Value, hexCode);
+
+            using (Assert.EnterMultipleScope())
+            {
+                //  Ensure the instance is not null
+                Assert.That(email, Is.InstanceOf<Email>());
+                Assert.That(email.ToEmailAddress, Is.InstanceOf<string>());
+                Assert.That(email.FromEmailAddress, Is.InstanceOf<string>());
+            
+                // Ensure the email has the correct properties
+                Assert.That(email.Body, Is.Not.Null);
+                Assert.That(email.Subject, Is.Not.Null);
+                Assert.That(email.ToEmailAddress, Is.Not.Null);
+                Assert.That(email.FromEmailAddress, Is.Not.Null);
+
+                Assert.That(email.ToEmailAddress, Is.EqualTo(userEmail.Value));
+                Assert.That(email.FromEmailAddress, Is.EqualTo("getnews@dummymail.com"));
+                Assert.That(email.Body, Is.EqualTo($"Kode: {hexCode}"));
+                Assert.That(email.Subject, Is.EqualTo("Bekreft abonnement på GET News"));
+            }
+        }
+                public void TestSignUpWithEmailAddress()
+        {
+
+            var hexCode = Guid.NewGuid();
+            var email = Email.CreateConfirmEmail(userEmail.Value, hexCode);
+
+            using (Assert.EnterMultipleScope())
+            {
+                //  Ensure the instance is not null
+                Assert.That(email, Is.InstanceOf<Email>());
+                Assert.That(email.ToEmailAddress, Is.InstanceOf<string>());
+                Assert.That(email.FromEmailAddress, Is.InstanceOf<string>());
+            
+                // Ensure the email has the correct properties
+                Assert.That(email.Body, Is.Not.Null);
+                Assert.That(email.Subject, Is.Not.Null);
+                Assert.That(email.ToEmailAddress, Is.Not.Null);
+                Assert.That(email.FromEmailAddress, Is.Not.Null);
+
+                Assert.That(email.ToEmailAddress, Is.EqualTo(userEmail.Value));
+                Assert.That(email.FromEmailAddress, Is.EqualTo("getnews@dummymail.com"));
+                Assert.That(email.Body, Is.EqualTo($"Kode: {hexCode}"));
+                Assert.That(email.Subject, Is.EqualTo("Bekreft abonnement på GET News"));
+            }
+        }
+        [Test]
         public void TestNewSignUp()
         {
             var signUpResult = SubscriptionService.SignUp("a@bb.com", null);

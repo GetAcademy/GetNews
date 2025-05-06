@@ -28,7 +28,7 @@ namespace GetNews.Core.DomainModel
         public static Email UnsubscribeEmail(string userEmail)
         {
             return new Email(
-                "getNews@getacademy.no",
+                "getnews@dummymail.com",
                 userEmail,
                 "Endringer i abonnementet",
                 "Vi bekrefter at du har meldt deg av Nyhetsbrevet hos GET News.\n"
