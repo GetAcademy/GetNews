@@ -48,11 +48,5 @@ namespace GetNews.Core.DomainModel
             
             ChangeStatus(SubscriptionStatus.Unsubscribed);
         }
-        
-
-        public void SetVerificationCode(Guid code)
-        {
-            VerificationCode = code;
-        }
     }
 }
