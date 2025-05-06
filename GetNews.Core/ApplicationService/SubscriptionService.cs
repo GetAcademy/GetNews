@@ -54,7 +54,6 @@ namespace GetNews.Core.ApplicationService
         }
 
         /// <summary>
-
         /// When a user verifies their subscription, the system will check if the email address is valid.
         /// If the email address is valid, the system will check if the user is already subscribed.
         /// </summary>
@@ -71,7 +70,7 @@ namespace GetNews.Core.ApplicationService
 
             if (subscription.IsVerified && subscription.Status == SubscriptionStatus.Verified) return SignUpResult.Fail(SignUpError.AlreadySubscribed);
 
-            subscription.ChangeStatus(SubscriptionStatus.Verified);
+            subscription.ChangeStatus();
 
             return SignUpResult.Ok(subscription, null);
         }
@@ -81,7 +80,7 @@ namespace GetNews.Core.ApplicationService
             if (!(new EmailAddress(subscription.EmailAddress).IsEqual(userMail))) return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
             if (!(subscription.Status == SubscriptionStatus.Verified || subscription.IsVerified)) return SignUpResult.Fail(SignUpError.Unknown);
             
-            subscription.ChangeStatus(SubscriptionStatus.SignedUp);
+            subscription.ChangeStatus();
             return SignUpResult.Ok(subscription, null);
 
         }

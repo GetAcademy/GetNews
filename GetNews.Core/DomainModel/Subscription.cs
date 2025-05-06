@@ -25,12 +25,22 @@ namespace GetNews.Core.DomainModel
             LastStatusChange = lastStatusChange ?? DateOnly.FromDateTime(DateTime.Now);
         }
 
-        public void ChangeStatus(SubscriptionStatus status)
+        public void ChangeStatus()
         {
             //  Changes the status of the subscription
-            Status = status;
-            IsVerified = status == SubscriptionStatus.Verified;
+            Status = NextStatus();
+            IsVerified = Status == SubscriptionStatus.Verified;
             LastStatusChange = DateOnly.FromDateTime(DateTime.Now);
+        }
+        private SubscriptionStatus NextStatus()
+        {
+            //  Returns the next status of the subscription
+            return Status switch
+            {
+                SubscriptionStatus.SignedUp => SubscriptionStatus.Verified,
+                SubscriptionStatus.Verified => SubscriptionStatus.SignedUp,
+                _ => throw new ArgumentOutOfRangeException(nameof(Status), Status, null)
+            };
         }
 
 
