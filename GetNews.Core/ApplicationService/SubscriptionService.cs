@@ -54,10 +54,9 @@ namespace GetNews.Core.ApplicationService
         }
 
         /// <summary>
-        /*
-            *   When a user verifies their subscription, the system will check if the email address is valid.
-            *   If the email address is valid, the system will check if the user is already subscribed.
-        */
+
+        /// When a user verifies their subscription, the system will check if the email address is valid.
+        /// If the email address is valid, the system will check if the user is already subscribed.
         /// </summary>
         /// <param name="userMail">The email address of the user</param>
         /// <param name="verificationCode">The verification code of the user</param>
