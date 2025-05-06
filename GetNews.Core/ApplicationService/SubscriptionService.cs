@@ -67,9 +67,11 @@ namespace GetNews.Core.ApplicationService
         public static SignUpResult Confirm(string userMail, Guid verificationCode, Subscription subscription)
         {
             if (subscription.VerificationCode != verificationCode) return SignUpResult.Fail(SignUpError.InvalidVertificationCode);
-            if (subscription.IsVerified && subscription.Status == SubscriptionStatus.Verified) return SignUpResult.Fail(SignUpError.AlreadySubscribed);
+
             if (!string.Equals(subscription.EmailAddress, userMail, StringComparison.OrdinalIgnoreCase)) return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
 
+            if (subscription.IsVerified && subscription.Status == SubscriptionStatus.Verified) return SignUpResult.Fail(SignUpError.AlreadySubscribed);
+            
             subscription.ChangeStatus(SubscriptionStatus.Verified);
 
             return SignUpResult.Ok(subscription, null);
@@ -79,11 +81,16 @@ namespace GetNews.Core.ApplicationService
         {
             if (string.Equals(subscription.EmailAddress, userMail, StringComparison.OrdinalIgnoreCase) && subscription.Status == SubscriptionStatus.Verified && subscription.IsVerified)
             { 
-                subscription.ChangeStatus(SubscriptionStatus.Unsubscribed);
+                subscription.ChangeStatus(SubscriptionStatus.SignedUp);
                 return SignUpResult.Ok(subscription, null);
             }
 
             return SignUpResult.Fail(SignUpError.Unknown);
+        }
+
+        public static object Confirm(string emailAddress, object value, Subscription subscription)
+        {
+            throw new NotImplementedException();
         }
     }
 }

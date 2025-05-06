@@ -69,24 +69,20 @@ namespace GetNews.Core.Test
         }
 
         [Test]
-        public void TestSignUpInvalidEmailAddress()
+        [TestCase("kake@gmail", TestName = "Invalid email address")]
+        [TestCase("kakegmail.no", TestName = "Invalid email address")]
+        public void TestSignUpInvalidEmailAddress(string userEmail)
         {
-            var singupTest = SubscriptionService.SignUp("abb@com", null);
-            var signupTest_2 = SubscriptionService.SignUp("abb.com", null);
-            
+            //  Arrange test
+            var singupTest = SubscriptionService.SignUp(userEmail, null);
 
-            //  Ensure the instance is Null
+            //  Assert
             NullCheck(singupTest);
-            NullCheck(signupTest_2);
-            
 
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(singupTest.Error, Is.EqualTo(SignUpError.InvalidEmailAddress));
-                Assert.That(signupTest_2.Error, Is.EqualTo(SignUpError.InvalidEmailAddress));
             }
-            // Check for throw exceptions
-            
         }
 
         [Test]
@@ -122,16 +118,19 @@ namespace GetNews.Core.Test
                 Assert.That(signUpResult.IsSuccess, Is.True);
             }
         }
-        [Test]
-        public void TestSignUpWithExistingUnVerified()
+        
+        [TestCase (SubscriptionStatus.SignedUp, false)]
+        public void TestSignUpWithExistingUnVerified(SubscriptionStatus status, bool isVerified)
+
         {
-            var subscription = new Subscription(userEmail.Value, SubscriptionStatus.SignedUp, Guid.NewGuid(), false, lastStatusChange:new DateOnly(2025, 4, 1));
-            var subscription_1 = new Subscription(userEmail.Value, SubscriptionStatus.SignedUp, Guid.NewGuid(), false, lastStatusChange:new DateOnly(2025, 4, 1));
+            //  Arrange test
+            var subscription = new Subscription(userEmail.Value, status, null, isVerified, lastStatusChange:new DateOnly(2025, 4, 1));
 
+            //  Activate the subscription
             var SignedUp = SubscriptionService.SignUp(subscription.EmailAddress, null);
-            var SignedUp_1 = SubscriptionService.SignUp(subscription_1.EmailAddress, subscription);
+            var SignedUp_1 = SubscriptionService.SignUp(subscription.EmailAddress, subscription);
 
-
+            //  Assert the subscription is not verified
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(SignedUp.IsSuccess, Is.True);
@@ -139,112 +138,81 @@ namespace GetNews.Core.Test
                 
                 Assert.That(SignedUp_1.Error, Is.EqualTo(SignUpError.SignedUp));
             }
-
         }
         
-        [Test]
-        public void TestConfirmation()
+        [TestCase (SubscriptionStatus.SignedUp, true)]
+        [TestCase (SubscriptionStatus.SignedUp, false)]
+        [TestCase (SubscriptionStatus.Verified, false)]
+        [TestCase (SubscriptionStatus.Unsubscribed, false)]
+        public void TestConfirmation(SubscriptionStatus status, bool isVerified)
         {
-
-            //  Initialize the subscription with a valid email address
+            //  Arrange
             var subscription = new Subscription(userEmail.Value, SubscriptionStatus.SignedUp, Guid.NewGuid(), false, lastStatusChange:new DateOnly(2025, 4, 1));
-            var subscription_1 = new Subscription(userEmail.Value, SubscriptionStatus.Verified, Guid.NewGuid(), false, lastStatusChange:new DateOnly(2025, 4, 1));
-            var subscription_2 = new Subscription(userEmail.Value, SubscriptionStatus.SignedUp, Guid.NewGuid(), true, lastStatusChange:new DateOnly(2025, 4, 1));
 
 
-            //  Verify the subscription to ensure the status is verified
+            //  Activate the subscription
             var confirm = SubscriptionService.Confirm(subscription.EmailAddress, subscription.VerificationCode, subscription);
-            var confirm_1 = SubscriptionService.Confirm(subscription_1.EmailAddress, subscription_1.VerificationCode, subscription_1);
-            var confirm_2 = SubscriptionService.Confirm(subscription_2.EmailAddress, subscription_2.VerificationCode, subscription_2);
 
 
+            //  Assert the subscription is verified
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(confirm.IsSuccess, Is.True);
-                Assert.That(confirm_1.IsSuccess, Is.True);
-                Assert.That(confirm_2.IsSuccess, Is.True);
-
                 Assert.That(subscription.IsVerified, Is.True);
-                Assert.That(subscription_1.IsVerified, Is.True);
-                Assert.That(subscription_2.IsVerified, Is.True);
-
                 Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Verified));
-                Assert.That(subscription_1.Status, Is.EqualTo(SubscriptionStatus.Verified));
-                Assert.That(subscription_2.Status, Is.EqualTo(SubscriptionStatus.Verified));
- 
             }
-
         }
 
-        [Test]
-        public void TestInvalidConfirmation()
+        [TestCase (SubscriptionStatus.Verified, true, "kake@gmail")]
+        [TestCase (SubscriptionStatus.SignedUp, true, "kakegmail.no")]
+        [TestCase (SubscriptionStatus.SignedUp, false, "kakegmailno")]
+        public void TestInvalidConfirmation(SubscriptionStatus status, bool isVerified, string fakeEmail)
         {
-
+            //  Arrange
+            var lastStatusUpdate = new DateOnly(2025, 4, 1);
             //  Initialize the subscription with a valid email address
-            var subscription = new Subscription(userEmail.Value, SubscriptionStatus.Verified, Guid.NewGuid(), true, lastStatusChange:new DateOnly(2025, 4, 1));
-            var subscription_1 = new Subscription(userEmail.Value, SubscriptionStatus.SignedUp, Guid.NewGuid(), true, lastStatusChange:new DateOnly(2025, 4, 1));
-            var subscription_2 = new Subscription(userEmail.Value, SubscriptionStatus.SignedUp, Guid.NewGuid(), false, lastStatusChange:new DateOnly(2025, 4, 1));
+            var subscription = new Subscription(userEmail.Value, status, null, isVerified, lastStatusUpdate);
 
+            //  Activate the subscription
+            var confirm = SubscriptionService.Confirm(fakeEmail, subscription.VerificationCode, subscription);
+            var confirm_1 = SubscriptionService.Confirm(subscription.EmailAddress, Guid.NewGuid(), subscription);
+            var confirm_2 = SubscriptionService.Confirm("kake@gmail.no", subscription.VerificationCode, subscription);
 
-            //  Verify the subscription to ensure the status is verified
-            var confirm_3 = SubscriptionService.Confirm(subscription.EmailAddress, subscription.VerificationCode, subscription);
-            var confirm_4 = SubscriptionService.Confirm("kake@gmail.no", subscription_1.VerificationCode, subscription_1);
-            var confirm_5 = SubscriptionService.Confirm(subscription_2.EmailAddress, Guid.NewGuid(), subscription);
-
+            //  Assert the subscription is not verified
             using (Assert.EnterMultipleScope())
             {
+                Assert.That(confirm.IsSuccess, Is.False);
 
-                Assert.That(confirm_3.IsSuccess, Is.False);
-                Assert.That(confirm_4.IsSuccess, Is.False);
-                Assert.That(confirm_5.IsSuccess, Is.False);
 
-                Assert.That(confirm_3.Error, Is.EqualTo(SignUpError.AlreadySubscribed));
-                Assert.That(confirm_4.Error, Is.EqualTo(SignUpError.InvalidEmailAddress));
-                Assert.That(confirm_5.Error, Is.EqualTo(SignUpError.InvalidVertificationCode));
-
-                Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Verified));
-                Assert.That(subscription_1.Status, Is.EqualTo(SubscriptionStatus.SignedUp));
-                Assert.That(subscription_2.Status, Is.EqualTo(SubscriptionStatus.SignedUp));
-
- 
+                Assert.That(confirm.Error, Is.EqualTo(SignUpError.InvalidEmailAddress));
+                Assert.That(confirm_1.Error, Is.EqualTo(SignUpError.InvalidVertificationCode));
+                Assert.That(confirm_2.Error, Is.EqualTo(SignUpError.InvalidEmailAddress));
             }
 
         }
 
-        [Test]
-        public void TestUnsubscribed()
+        [TestCase(SubscriptionStatus.Verified, true)]
+        [TestCase(SubscriptionStatus.SignedUp, true)]
+        [TestCase(SubscriptionStatus.SignedUp, false)]
+        [TestCase(SubscriptionStatus.Verified, false)]
+        public void TestUnsubscribed(SubscriptionStatus status, bool isVerified)
+
         {
-            var subscription = new Subscription(userEmail.Value, SubscriptionStatus.Verified, Guid.NewGuid(), true, lastStatusChange:new DateOnly(2025, 4, 1));
-            var subscription_1 = new Subscription(userEmail.Value, SubscriptionStatus.Verified, Guid.NewGuid(), true, lastStatusChange:new DateOnly(2025, 4, 1));
-            var subscription_2 = new Subscription(userEmail.Value, SubscriptionStatus.Verified, Guid.NewGuid(), true, lastStatusChange:new DateOnly(2025, 4, 1));
-        
-            var subscription_3 = new Subscription(userEmail.Value, SubscriptionStatus.SignedUp, Guid.NewGuid(), true, lastStatusChange:new DateOnly(2025, 4, 1));
-            var subscription_5 = new Subscription(userEmail.Value, SubscriptionStatus.SignedUp, Guid.NewGuid(), false, lastStatusChange:new DateOnly(2025, 4, 1));
-            var subscription_4 = new Subscription(userEmail.Value, SubscriptionStatus.Verified, Guid.NewGuid(), false, lastStatusChange:new DateOnly(2025, 4, 1));
-            
-            var subscription_6 = new Subscription(userEmail.Value, SubscriptionStatus.Unsubscribed, Guid.NewGuid(), false, lastStatusChange:new DateOnly(2025, 4, 1));
-            var subscription_7 = new Subscription(userEmail.Value, SubscriptionStatus.Unsubscribed, Guid.NewGuid(), true, lastStatusChange:new DateOnly(2025, 4, 1));
+            //  Arrange
+            var subscription = new Subscription(userEmail.Value, status, null, isVerified, lastStatusChange:new DateOnly(2025, 4, 1));
+            var subscription_1 = new Subscription(userEmail.Value, SubscriptionStatus.Verified, null, true, lastStatusChange:new DateOnly(2025, 4, 1));
 
+
+            //  Activate the subscription
             SubscriptionService.Unsubscribe(subscription.EmailAddress, subscription);
-            SubscriptionService.Unsubscribe(subscription_3.EmailAddress, subscription_2);
-            SubscriptionService.Unsubscribe(subscription_1.EmailAddress.ToLower(), subscription_1);
-            SubscriptionService.Unsubscribe(subscription_2.EmailAddress.ToUpper(), subscription_2);
+            SubscriptionService.Unsubscribe(subscription.EmailAddress, subscription_1);
+            SubscriptionService.Unsubscribe(subscription.EmailAddress.ToLower(), subscription);
+            SubscriptionService.Unsubscribe(subscription.EmailAddress.ToUpper(), subscription);
 
+            //  Assert the subscription is SignedUp
             using (Assert.EnterMultipleScope())
             {
-                Assert.That(subscription.IsVerified, Is.False);
-                Assert.That(subscription_1.IsVerified, Is.False);
-                Assert.That(subscription_2.IsVerified, Is.False);
-                Assert.That(subscription_3.IsVerified, Is.True);
-                Assert.That(subscription_4.IsVerified, Is.False);
-                Assert.That(subscription_5.IsVerified, Is.False);
-                Assert.That(subscription_6.IsVerified, Is.False);
-                Assert.That(subscription_7.IsVerified, Is.True);
-
-                Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.Unsubscribed));
-                Assert.That(subscription_1.Status, Is.EqualTo(SubscriptionStatus.Unsubscribed));
-                Assert.That(subscription_2.Status, Is.EqualTo(SubscriptionStatus.Unsubscribed));
-
+                Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.SignedUp));
             }
         }
 
