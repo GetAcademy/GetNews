@@ -66,5 +66,11 @@ namespace GetNews.API
             await SubscriptionFileRepository.SaveSubscription(result.Subscription, basePath);
             return new { IsSuccess = true };
         }
+
+      /*  public static async Task<object> Unsubscribe(SubscriptionSignUp subscriptionUnsubscribe, IOptions<AppConfig> options
+            {
+            var basePath = options.Value.BasePath;
+             
+        }*/
     }
 }

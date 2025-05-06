@@ -13,7 +13,10 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseDefaultFiles();
 app.UseStaticFiles();
-app.MapSubscriptionEndpoints();
+app.MapPost("/api/subscription/signup", SubscriptionController.SignUp);
+app.MapPost("/api/subscription/verify", SubscriptionController.Verify);
+//app.MapPost("/api/subscription/unsubscribe", SubscriptionController.Unsubscribe);
+//app.MapSubscriptionEndpoints();
 
 
 
