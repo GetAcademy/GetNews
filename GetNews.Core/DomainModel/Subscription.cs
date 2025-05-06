@@ -13,7 +13,7 @@ namespace GetNews.Core.DomainModel
         public Subscription(
             string emailAddress,
             SubscriptionStatus status = SubscriptionStatus.SignedUp,
-            Guid verificationCode = default,
+            Guid? verificationCode = null,
             bool isVerified = false,
             DateOnly? lastStatusChange = null
         )
@@ -22,9 +22,8 @@ namespace GetNews.Core.DomainModel
             Status = status;
             IsVerified = isVerified;
 
-            // 🔧 FIX: bare generer ny hvis ingen kode ble sendt inn
-            VerificationCode = verificationCode != Guid.Empty ? verificationCode : Guid.NewGuid();
-            
+            VerificationCode = verificationCode ?? Guid.NewGuid();
+
             LastStatusChange = lastStatusChange ?? DateOnly.FromDateTime(DateTime.Now);
         }
 
