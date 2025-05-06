@@ -34,11 +34,11 @@ namespace GetNews.Core.Test
                 Assert.That(email.Subject, Is.EqualTo("Bekreft abonnement på GET News"));
             }
         }
-                public void TestSignUpWithEmailAddress()
+        
+         [Test]
+        public void TestUnsubscribedEmail()
         {
-
-            var hexCode = Guid.NewGuid();
-            var email = Email.CreateConfirmEmail(userEmail.Value, hexCode);
+            var email = Email.UnsubscribeEmail(userEmail.Value);
 
             using (Assert.EnterMultipleScope())
             {
@@ -55,8 +55,8 @@ namespace GetNews.Core.Test
 
                 Assert.That(email.ToEmailAddress, Is.EqualTo(userEmail.Value));
                 Assert.That(email.FromEmailAddress, Is.EqualTo("getnews@dummymail.com"));
-                Assert.That(email.Body, Is.EqualTo($"Kode: {hexCode}"));
-                Assert.That(email.Subject, Is.EqualTo("Bekreft abonnement på GET News"));
+                Assert.That(email.Body, Is.EqualTo($"Vi bekrefter at du har meldt deg av Nyhetsbrevet hos GET News.\n"));
+                Assert.That(email.Subject, Is.EqualTo("Endringer i abonnementet"));
             }
         }
         [Test]
