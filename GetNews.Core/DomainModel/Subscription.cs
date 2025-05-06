@@ -32,6 +32,7 @@ namespace GetNews.Core.DomainModel
             IsVerified = Status == SubscriptionStatus.Verified;
             LastStatusChange = DateOnly.FromDateTime(DateTime.Now);
         }
+        
         private SubscriptionStatus NextStatus()
         {
             //  Returns the next status of the subscription
