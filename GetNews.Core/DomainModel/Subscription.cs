@@ -24,14 +24,13 @@ namespace GetNews.Core.DomainModel
 
             // 🔧 FIX: bare generer ny hvis ingen kode ble sendt inn
             VerificationCode = verificationCode != Guid.Empty ? verificationCode : Guid.NewGuid();
-
+            
             LastStatusChange = lastStatusChange ?? DateOnly.FromDateTime(DateTime.Now);
         }
 
         private void ChangeStatus(SubscriptionStatus status)
         {
             //  Changes the status of the subscription
-
             Status = status;
             IsVerified = status == SubscriptionStatus.Verified;
             LastStatusChange = DateOnly.FromDateTime(DateTime.Now);
@@ -44,8 +43,6 @@ namespace GetNews.Core.DomainModel
 
         public void Unsubscribe()
         {
-            // Changes the status to unsubscribed
-            
             ChangeStatus(SubscriptionStatus.Unsubscribed);
         }
     }
