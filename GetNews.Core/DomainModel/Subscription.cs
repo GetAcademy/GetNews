@@ -34,5 +34,7 @@ namespace GetNews.Core.DomainModel
             IsVerified = status == SubscriptionStatus.Verified;
             LastStatusChange = DateOnly.FromDateTime(DateTime.Now);
         }
+
+
     }
 }

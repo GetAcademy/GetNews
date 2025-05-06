@@ -202,7 +202,6 @@ namespace GetNews.Core.Test
             var subscription = new Subscription(userEmail.Value, status, null, isVerified, lastStatusChange:new DateOnly(2025, 4, 1));
             var subscription_1 = new Subscription(userEmail.Value, SubscriptionStatus.Verified, null, true, lastStatusChange:new DateOnly(2025, 4, 1));
 
-
             //  Activate the subscription
             SubscriptionService.Unsubscribe(subscription.EmailAddress, subscription);
             SubscriptionService.Unsubscribe(subscription.EmailAddress, subscription_1);
@@ -212,7 +211,9 @@ namespace GetNews.Core.Test
             //  Assert the subscription is SignedUp
             using (Assert.EnterMultipleScope())
             {
+                Assert.That(subscription.IsVerified, Is.False);
                 Assert.That(subscription.Status, Is.EqualTo(SubscriptionStatus.SignedUp));
+                
             }
         }
 
