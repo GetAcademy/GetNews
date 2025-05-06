@@ -85,8 +85,7 @@ namespace GetNews.Core.Test
             }
         }
 
-        [Test]
-        public void TestSignUpAlreadySubscribed()
+        [Test]        public void TestSignUpAlreadySubscribed()
         {
             var subscription = new Subscription(userEmail.Value, SubscriptionStatus.Verified);
             var signUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
@@ -148,10 +147,8 @@ namespace GetNews.Core.Test
             //  Arrange
             var subscription = new Subscription(userEmail.Value, SubscriptionStatus.SignedUp, Guid.NewGuid(), false, lastStatusChange:new DateOnly(2025, 4, 1));
 
-
             //  Activate the subscription
             var confirm = SubscriptionService.Confirm(subscription.EmailAddress, subscription.VerificationCode, subscription);
-
 
             //  Assert the subscription is verified
             using (Assert.EnterMultipleScope())
@@ -167,9 +164,9 @@ namespace GetNews.Core.Test
         [TestCase (SubscriptionStatus.SignedUp, false, "kakegmailno")]
         public void TestInvalidConfirmation(SubscriptionStatus status, bool isVerified, string fakeEmail)
         {
-            //  Arrange
             var lastStatusUpdate = new DateOnly(2025, 4, 1);
-            //  Initialize the subscription with a valid email address
+
+            //  Arrange
             var subscription = new Subscription(userEmail.Value, status, null, isVerified, lastStatusUpdate);
 
             //  Activate the subscription
@@ -181,7 +178,6 @@ namespace GetNews.Core.Test
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(confirm.IsSuccess, Is.False);
-
 
                 Assert.That(confirm.Error, Is.EqualTo(SignUpError.InvalidEmailAddress));
                 Assert.That(confirm_1.Error, Is.EqualTo(SignUpError.InvalidVertificationCode));
@@ -214,17 +210,14 @@ namespace GetNews.Core.Test
             }
         }
 
+        /// <summary>
+        /// Helper function to ensure the type is null
+        /// </summary>
+        /// <param name="subscription">Subscription type of SignUpResults </param>
         private static void NullCheck(SignUpResult subscription)
         {
-            /*
-                *   Helper function to ensure the type is null
-
-                *   @param : Subscription type of SignUpResults 
-            */
-
             using (Assert.EnterMultipleScope())
             {
-                
                 
                 Assert.That(subscription.Email, Is.Null);
                 Assert.That(subscription.IsSuccess, Is.False);
@@ -232,14 +225,13 @@ namespace GetNews.Core.Test
             }
         }
         
+        /// <summary>
+        /// Helper function to ensure the type of Email and Subscription
+        /// </summary>
+        /// <param name="subscription">Subscription type of SignUpResults</param>
+        /// <returns></returns>
         private static void InstanceCheck(SignUpResult subscription)
         {
-            /*
-                *   Helper function to ensures the type of Email and Subscription
-
-                *   @param : Subscription type of SignUpResults 
-            */
-
             using (Assert.EnterMultipleScope())
             {
                 
