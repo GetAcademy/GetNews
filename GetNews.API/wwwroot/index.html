@@ -31,6 +31,7 @@
                     /><br/>
                 <button onclick="subscribe()">Abonner på nyhetsbrev</button>
                 <button onclick="verify()">Bekreft nyhetsbrev</button>
+                <button onclick="unsubscribe()">Stopp Nyhetsbrev</button>
                 <div style="color:orange;">${model.message ?? ''}</div>
             `;
         }
@@ -59,6 +60,18 @@
             console.log("Verify response:", data);
             updateView();
         }
+
+        async function unsubscribe()
+        {
+            const data = await callApi('/api/subscription/unsubscribe', 'POST', { emailAddress: model.email })
+            model.message = data.isSuccess
+                ? "Nyhetsbrev Stoppet!"
+                : `Nyhetsbrev kunne ikke stoppes feil: ${data.error || 'ukjent feil'}`;
+
+            console.log("Unsubscribe response: ", data);
+            updateView();
+        }
+
         async function callApi(url, method, obj) {
             try {
                 const response = await fetch(url, {

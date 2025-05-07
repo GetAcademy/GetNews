@@ -67,10 +67,25 @@ namespace GetNews.API
             return new { IsSuccess = true };
         }
 
-      /*  public static async Task<object> Unsubscribe(SubscriptionSignUp subscriptionUnsubscribe, IOptions<AppConfig> options
+        public static async Task<object> Unsubscribe(SubscriptionSignUp subscriptionUnsubscribe, IOptions<AppConfig> options)
             {
             var basePath = options.Value.BasePath;
-             
-        }*/
+            var email = subscriptionUnsubscribe.EmailAddress;
+
+            var subscription = await SubscriptionFileRepository.LoadSubscription(email, basePath);
+            var result = SubscriptionService.Unsubscribe(email, subscription);
+
+            if (!result.IsSuccess) {
+                return new
+                {
+                    IsSuccess = false,
+                    Error = result.Error.ToString()
+                };
+                }
+
+                await SubscriptionFileRepository.SaveSubscription(result.Subscription, basePath);
+                return new { IsSuccess = true };
+
+        }
     }
 }
