@@ -1,5 +1,5 @@
 #   GetNews
-GetNews prosjektet handler om å bygge et backend for Nyhets brev, der en brukeren kan både melde intresse,
+GetNews prosjektet handler om å bygge et backend for et Nyhets brev, der en brukeren kan både melde intresse,
 vertifisere koden som blir sendt på epost og melde av nyhets brevet.
 
 ##  Installation
@@ -39,4 +39,4 @@ Visual Studio 2019 > / Rider 2020.3 / Visual Studio Code >
 
 
 Have a glorious day further,
-krigjo25, 
+Kimser91, krigjo25 & Emsaso
