@@ -60,17 +60,17 @@ namespace GetNews.Core.ApplicationService
         /// <param name="subscription">The subscription object of the user</param>
         /// <returns>A SignUpResult object containing the result of the sign-up process</returns>
 
-        public static SignUpResult Confirm(string userMail, Guid verificationCode, Subscription subscription)
+        public static Result<Subscription> Confirm(string userMail, Guid verificationCode, Subscription subscription)
         {
-            if (subscription.VerificationCode != verificationCode) return SignUpResult.Fail(SignUpError.InvalidVertificationCode);
+            if (subscription.VerificationCode != verificationCode) return Result<Subscription>.Fail(SignUpError.InvalidVertificationCode);
 
-            if (new EmailAddress(subscription.EmailAddress).IsEqual(userMail)) return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
+            if (new EmailAddress(subscription.EmailAddress).IsEqual(userMail)) return Result<Subscription>.Fail(SignUpError.InvalidEmailAddress);
 
-            if (subscription.IsVerified && subscription.Status == SubscriptionStatus.Verified) return SignUpResult.Fail(SignUpError.AlreadySubscribed);
+            if (subscription.IsVerified && subscription.Status == SubscriptionStatus.Verified) return Result<Subscription>.Fail(SignUpError.AlreadySubscribed);
 
             subscription.ChangeStatus();
 
-            return SignUpResult.Ok(subscription, null);
+            return Result<Subscription>.Ok(subscription);
         }
 
         public static SignUpResult? Unsubscribe(string userMail, Subscription subscription)

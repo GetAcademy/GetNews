@@ -45,46 +45,47 @@ namespace GetNews.API
 
         public static async Task<object> Verify(SubscriptionVerification verification, IOptions<AppConfig> options)
         {
+            // IO
             var basePath = options.Value.BasePath;
             var email = verification.EmailAddress;
 
-            // parse Verification Code to GUID.
             if (!Guid.TryParse(verification.VerificationCode, out var verificationCode))
             {
                 return new { IsSuccess = false, Error = "Invalid Verification code format" };
             }
 
             var subscription = await SubscriptionFileRepository.LoadSubscription(email, basePath);
+
+            // Logikk uten IO - i kjernen
             var result = SubscriptionService.Confirm(email, verificationCode, subscription);
 
-            if (!result.IsSuccess)
-            {
-                return new { IsSuccess = false, Error = result.Error.ToString() };
 
-            }
+            // IO
+            if (!result.IsSuccess) return new { IsSuccess = false, result.Error };
 
-            await SubscriptionFileRepository.SaveSubscription(result.Subscription, basePath);
+            await SubscriptionFileRepository.SaveSubscription(result.Value, basePath);
             return new { IsSuccess = true };
         }
 
         public static async Task<object> Unsubscribe(SubscriptionSignUp subscriptionUnsubscribe, IOptions<AppConfig> options)
-            {
+        {
             var basePath = options.Value.BasePath;
             var email = subscriptionUnsubscribe.EmailAddress;
 
             var subscription = await SubscriptionFileRepository.LoadSubscription(email, basePath);
             var result = SubscriptionService.Unsubscribe(email, subscription);
 
-            if (!result.IsSuccess) {
+            if (!result.IsSuccess)
+            {
                 return new
                 {
                     IsSuccess = false,
                     Error = result.Error.ToString()
                 };
-                }
+            }
 
-                await SubscriptionFileRepository.SaveSubscription(result.Subscription, basePath);
-                return new { IsSuccess = true };
+            await SubscriptionFileRepository.SaveSubscription(result.Subscription, basePath);
+            return new { IsSuccess = true };
 
         }
     }
