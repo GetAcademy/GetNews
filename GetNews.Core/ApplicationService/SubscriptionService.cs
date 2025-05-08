@@ -66,7 +66,7 @@ namespace GetNews.Core.ApplicationService
         {
             if (subscription.VerificationCode != verificationCode) return SignUpResult.Fail(SignUpError.InvalidVertificationCode);
 
-            if (!string.Equals(subscription.EmailAddress, userMail, StringComparison.OrdinalIgnoreCase)) return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
+           if (!(new EmailAddress(subscription.EmailAddress).IsEqual(userMail))) return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
 
             if (subscription.IsVerified && subscription.Status == SubscriptionStatus.Verified) return SignUpResult.Fail(SignUpError.AlreadySubscribed);
 
