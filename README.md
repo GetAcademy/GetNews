@@ -11,6 +11,7 @@ gh repo clone krigjo25/console-ConnectSimulator-cs
 
 ** Using HTTPS **
 git clone https://github.com/krigjo25/console-socialmedia-cs-cs
+
 ** Using SSH**
 ssh  git@github.com:krigjo25/console-ConnectSimulator-cs.git
 
