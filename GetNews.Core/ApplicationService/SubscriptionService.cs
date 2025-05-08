@@ -84,10 +84,5 @@ namespace GetNews.Core.ApplicationService
             return SignUpResult.Ok(subscription, null);
 
         }
-
-        public static object Confirm(string emailAddress, object value, Subscription subscription)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
