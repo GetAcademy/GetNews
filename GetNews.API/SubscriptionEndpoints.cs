@@ -8,6 +8,7 @@
 
             group.MapPost("/signup", SubscriptionController.SignUp);
             group.MapPost("/verify", SubscriptionController.Verify);
+            group.MapPost("/unsubscribe", SubscriptionController.Unsubscribe);
         }
     }
 }
