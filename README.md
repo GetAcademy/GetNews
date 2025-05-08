@@ -15,9 +15,9 @@ git clone https://github.com/krigjo25/console-socialmedia-cs-cs
 ssh  git@github.com:krigjo25/console-ConnectSimulator-cs.git
 
 ```
-1. Open the project in Visual Studio / Raider / Code VS
-2. Run the project
-3. Done!
+2. Open the project in Visual Studio / Raider / Code VS
+3. Run the project
+4. Done!
 
 ### Requirements
 NUnit 4.3 >
