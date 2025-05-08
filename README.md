@@ -32,11 +32,9 @@ Visual Studio 2019 > / Rider 2020.3 / Visual Studio Code >
 
 [Recommended Workspace for VSC](https://vscode.dev/profile/github/4c4bde0a91b6c89df4bdfc6f5f022189)
 
-## Emne 5 GetNews
-
 
 ##  Developer notes
-
+Dette er en løsnings forslag på utfordringen.
 
 Have a glorious day further,
 Kimser91, krigjo25 & Emsaso

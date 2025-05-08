@@ -64,7 +64,7 @@ namespace GetNews.Core.ApplicationService
         {
             if (subscription.VerificationCode != verificationCode) return SignUpResult.Fail(SignUpError.InvalidVertificationCode);
 
-           if (!(new EmailAddress(subscription.EmailAddress).IsEqual(userMail))) return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
+            if (new EmailAddress(subscription.EmailAddress).IsEqual(userMail)) return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
 
             if (subscription.IsVerified && subscription.Status == SubscriptionStatus.Verified) return SignUpResult.Fail(SignUpError.AlreadySubscribed);
 
@@ -75,10 +75,11 @@ namespace GetNews.Core.ApplicationService
 
         public static SignUpResult? Unsubscribe(string userMail, Subscription subscription)
         {
-            if (!(new EmailAddress(subscription.EmailAddress).IsEqual(userMail))) return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
+            if (new EmailAddress(subscription.EmailAddress).IsEqual(userMail)) return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
             if (!(subscription.Status == SubscriptionStatus.Verified || subscription.IsVerified)) return SignUpResult.Fail(SignUpError.Unknown);
             
             subscription.ChangeStatus();
+
             return SignUpResult.Ok(subscription, null);
 
         }
