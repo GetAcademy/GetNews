@@ -1,6 +1,4 @@
-﻿// GetNews Subscription Service2
-
-namespace GetNews.Core.DomainModel
+﻿namespace GetNews.Core.DomainModel
 {
     public class Subscription
     {
@@ -27,7 +25,7 @@ namespace GetNews.Core.DomainModel
 
         public void ChangeStatus()
         {
-            //  Changes the status of the subscription
+
             Status = NextStatus();
             IsVerified = Status == SubscriptionStatus.Verified;
             LastStatusChange = DateOnly.FromDateTime(DateTime.Now);
@@ -35,7 +33,6 @@ namespace GetNews.Core.DomainModel
         
         private SubscriptionStatus NextStatus()
         {
-            //  Returns the next status of the subscription
             return Status switch
             {
                 SubscriptionStatus.SignedUp => SubscriptionStatus.Verified,

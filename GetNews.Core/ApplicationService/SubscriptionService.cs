@@ -11,34 +11,32 @@ namespace GetNews.Core.ApplicationService
         public static SignUpResult SignUp(string emailAddressStr, Subscription? subscription)
         {
             var emailAddress = new EmailAddress(emailAddressStr);
+
             if (!emailAddress.IsValid())
-                return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
+                return Result<Subscription>.Fail(EmailError.InvalidEmailAddress);
 
             // create a new subscription object.
             if (subscription == null)
             {
                 subscription = new Subscription(emailAddressStr);
 
-                var mail = Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode);
-                return SignUpResult.Ok(subscription, mail);
+                Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode);
+
+                return Result<Subscription>.Ok(subscription);
             }
 
             // When the subscriber has already signed up, the system will check if the user is already subscribed.
             switch (subscription.Status)
             {
-                case SubscriptionStatus.Verified:
-                    return SignUpResult.Fail(SignUpError.AlreadySubscribed);
-
-                case SubscriptionStatus.SignedUp:
-                    return SignUpResult.Fail(SignUpError.SignedUp);
-
+                case SubscriptionStatus.Verified or SubscriptionStatus.SignedUp:
+                    return Result<Subscription>.Fail(SubscriptionError.AlreadySignedUp);
 
                 case SubscriptionStatus.Unsubscribed:
-                    var mail = Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode);
-                    return SignUpResult.Ok(subscription, mail);
+                    Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode);
+                    return Result<Subscription>.Ok(subscription);
 
                 default:
-                    return SignUpResult.Fail(SignUpError.Unknown);
+                    return Result<Subscription>.Fail(Error.Unknown);
             }
         }
 
@@ -53,25 +51,25 @@ namespace GetNews.Core.ApplicationService
 
         public static Result<Subscription> Confirm(string userMail, Guid verificationCode, Subscription subscription)
         {
-            if (subscription.VerificationCode != verificationCode) return Result<Subscription>.Fail(SignUpError.InvalidVertificationCode);
+            if (subscription.VerificationCode != verificationCode) return Result<Subscription>.Fail(SubscriptionError.InvalidVertificationCode);
 
-            if (new EmailAddress(subscription.EmailAddress).IsEqual(userMail)) return Result<Subscription>.Fail(SignUpError.InvalidEmailAddress);
+            if (new EmailAddress(subscription.EmailAddress).IsEqual(userMail)) return Result<Subscription>.Fail(EmailError.InvalidEmailAddress);
 
-            if (subscription.IsVerified && subscription.Status == SubscriptionStatus.Verified) return Result<Subscription>.Fail(SignUpError.AlreadySubscribed);
+            if (subscription.IsVerified && subscription.Status == SubscriptionStatus.Verified) return Result<Subscription>.Fail(SubscriptionError.AlreadySignedUp);
 
             subscription.ChangeStatus();
 
             return Result<Subscription>.Ok(subscription);
         }
 
-        public static SignUpResult? Unsubscribe(string userMail, Subscription subscription)
+        public static Result<Subscription> Unsubscribe(string userMail, Subscription subscription)
         {
-            if (new EmailAddress(subscription.EmailAddress).IsEqual(userMail)) return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
-            if (!(subscription.Status == SubscriptionStatus.Verified || subscription.IsVerified)) return SignUpResult.Fail(SignUpError.Unknown);
+            if (new EmailAddress(subscription.EmailAddress).IsEqual(userMail)) return Result<Subscription>.Fail(EmailError.InvalidEmailAddress);
+            if (!(subscription.Status == SubscriptionStatus.Verified || subscription.IsVerified)) return Result<Subscription>.Fail(Error.Unknown);
             
             subscription.ChangeStatus();
 
-            return SignUpResult.Ok(subscription, null);
+            return Result<Subscription>.Ok(subscription);
 
         }
     }
