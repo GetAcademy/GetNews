@@ -18,7 +18,7 @@ namespace GetNews.Core.DomainModel
 
     public enum EmailError
     {
-        InvalidEmail,
+        InvalidEmailAddress,
         EmailNotFound,
 
     }
