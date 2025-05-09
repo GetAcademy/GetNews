@@ -22,14 +22,15 @@ namespace GetNews.Core.ApplicationService
             var emailAddress = new EmailAddress(emailAddressStr);
 
             if (!emailAddress.IsValid())
-                return Result<Subscription>.Fail(EmailError.InvalidEmail);
+                return Result<Subscription>.Fail(EmailError.InvalidEmailAddress);
 
             // create a new subscription object.
             if (subscription == null)
             {
                 subscription = new Subscription(emailAddressStr);
 
-                var mail = Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode);
+                Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode);
+
                 return Result<Subscription>.Ok(subscription);
             }
 
@@ -40,7 +41,7 @@ namespace GetNews.Core.ApplicationService
                     return Result<Subscription>.Fail(SubscriptionError.AlreadySignedUp);
 
                 case SubscriptionStatus.Unsubscribed:
-                    var mail = Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode);
+                    Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode);
                     return Result<Subscription>.Ok(subscription);
 
                 default:
@@ -61,7 +62,7 @@ namespace GetNews.Core.ApplicationService
         {
             if (subscription.VerificationCode != verificationCode) return Result<Subscription>.Fail(SubscriptionError.InvalidVertificationCode);
 
-            if (new EmailAddress(subscription.EmailAddress).IsEqual(userMail)) return Result<Subscription>.Fail(EmailError.InvalidEmail);
+            if (new EmailAddress(subscription.EmailAddress).IsEqual(userMail)) return Result<Subscription>.Fail(EmailError.InvalidEmailAddress);
 
             if (subscription.IsVerified && subscription.Status == SubscriptionStatus.Verified) return Result<Subscription>.Fail(SubscriptionError.AlreadySignedUp);
 
@@ -72,7 +73,7 @@ namespace GetNews.Core.ApplicationService
 
         public static Result<Subscription> Unsubscribe(string userMail, Subscription subscription)
         {
-            if (new EmailAddress(subscription.EmailAddress).IsEqual(userMail)) return Result<Subscription>.Fail(EmailError.InvalidEmail);
+            if (new EmailAddress(subscription.EmailAddress).IsEqual(userMail)) return Result<Subscription>.Fail(EmailError.InvalidEmailAddress);
             if (!(subscription.Status == SubscriptionStatus.Verified || subscription.IsVerified)) return Result<Subscription>.Fail(Error.Unknown);
             
             subscription.ChangeStatus();
