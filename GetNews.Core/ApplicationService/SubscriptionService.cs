@@ -1,5 +1,6 @@
 ﻿//  SIgnup process for a subscription
 
+using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
 using GetNews.Core.DomainModel;
 
@@ -13,30 +14,30 @@ namespace GetNews.Core.ApplicationService
             var emailAddress = new EmailAddress(emailAddressStr);
 
             if (!emailAddress.IsValid())
-                return Result<Subscription>.Fail(EmailError.InvalidEmailAddress);
+                return SignUpResult.Fail(SignUpError.InvalidEmailAddress);
 
             // create a new subscription object.
             if (subscription == null)
             {
                 subscription = new Subscription(emailAddressStr);
 
-                Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode);
+                var mail = Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode);
 
-                return Result<Subscription>.Ok(subscription);
+                return SignUpResult.Ok(subscription, mail);
             }
 
             // When the subscriber has already signed up, the system will check if the user is already subscribed.
             switch (subscription.Status)
             {
                 case SubscriptionStatus.Verified or SubscriptionStatus.SignedUp:
-                    return Result<Subscription>.Fail(SubscriptionError.AlreadySignedUp);
+                    return SignUpResult.Fail(SignUpError.SignedUp);
 
                 case SubscriptionStatus.Unsubscribed:
-                    Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode);
-                    return Result<Subscription>.Ok(subscription);
+                    var mail = Email.CreateConfirmEmail(emailAddressStr, subscription.VerificationCode);
+                    return SignUpResult.Ok(subscription, mail);
 
                 default:
-                    return Result<Subscription>.Fail(Error.Unknown);
+                    return SignUpResult.Fail(SignUpError.Unknown);
             }
         }
 
