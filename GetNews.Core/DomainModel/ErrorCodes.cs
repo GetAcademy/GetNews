@@ -10,7 +10,6 @@ namespace GetNews.Core.DomainModel
     public enum SubscriptionError 
     {
         AlreadySignedUp,
-        InvalidEmailFormat,
         SubscriptionNotFound,
         InvalidVertificationCode,
         VertificationCodeNotFound,
@@ -18,6 +17,7 @@ namespace GetNews.Core.DomainModel
 
     public enum EmailError
     {
+        InvalidEmailFormat,
         InvalidEmailAddress,
         EmailNotFound,
 
