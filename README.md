@@ -27,7 +27,7 @@ NUnit.Analyzer 4.7 >
 NUnit3TestAdapter 5.0 >
 .NetTestSdk 17.13 >
 Swasjbuckle.AspNetCore 6.6 >
-Microsoft.Extensions.Logging" 9 >
+~~Microsoft.Extensions.Logging" 9 >~~
 Visual Studio 2019 > / Rider 2020.3 / Visual Studio Code >
 
 [Recommended Workspace for VSC](https://vscode.dev/profile/github/4c4bde0a91b6c89df4bdfc6f5f022189)

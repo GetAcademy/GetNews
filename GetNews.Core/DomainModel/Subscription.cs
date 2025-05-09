@@ -1,4 +1,4 @@
-﻿// GetNews Subscription Service
+﻿// GetNews Subscription Service2
 
 namespace GetNews.Core.DomainModel
 {

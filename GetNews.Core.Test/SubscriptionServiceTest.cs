@@ -108,7 +108,7 @@ namespace GetNews.Core.Test
             var subscription = new Subscription(userEmail.Value, SubscriptionStatus.Unsubscribed);
             var signUpResult = SubscriptionService.SignUp(userEmail.Value, subscription);
 
-            //  Ensure the instance is Null
+            //  Ensure the instancek is Null
             InstanceCheck(signUpResult);
 
             //  Assert the error is already subscribed
