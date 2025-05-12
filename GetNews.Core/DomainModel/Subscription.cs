@@ -33,12 +33,7 @@
         
         private SubscriptionStatus NextStatus()
         {
-            return Status switch
-            {
-                SubscriptionStatus.SignedUp => SubscriptionStatus.Verified,
-                SubscriptionStatus.Verified => SubscriptionStatus.SignedUp,
-                _ => throw new ArgumentOutOfRangeException(nameof(Status), Status, null)
-            };
+            return Status == SubscriptionStatus.Unsubscribed? SubscriptionStatus.SignedUp : Status++;
         }
 
 

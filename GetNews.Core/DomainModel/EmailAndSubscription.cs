@@ -1,6 +1,6 @@
 ﻿namespace GetNews.Core.DomainModel
 {
-    internal class EmailAndSubscription
+    public class EmailAndSubscription
     {
         public Email Email { get;  }
         public Subscription Subscription { get;  }
