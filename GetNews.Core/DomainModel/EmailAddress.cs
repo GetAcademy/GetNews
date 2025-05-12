@@ -1,4 +1,6 @@
-﻿namespace GetNews.Core.DomainModel
+﻿//  ??
+
+namespace GetNews.Core.DomainModel
 {
     public class EmailAddress
     {
@@ -12,6 +14,10 @@
         public bool IsValid()
         {
             return Value.Contains('@') && Value.Contains('.');
+        }
+        public bool IsEqual(string emailAddress)
+        {
+            return string.Equals(Value, emailAddress.Trim().ToLower(), StringComparison.OrdinalIgnoreCase);
         }
     }
 }

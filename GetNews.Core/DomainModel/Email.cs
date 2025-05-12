@@ -1,26 +1,38 @@
-﻿namespace GetNews.Core.DomainModel
+﻿//  Initializing the Confirmation Email
+
+namespace GetNews.Core.DomainModel
 {
     public class Email
     {
-        public string FromEmailAddress { get; }
-        public string ToEmailAddress { get; }
-        public string Subject { get; }
         public string Body { get; }
+        public string Subject { get; }
+        public string ToEmailAddress { get; }
+        public string FromEmailAddress { get; }
 
         public Email(string fromEmailAddress, string toEmailAddress, string subject, string body)
         {
-            FromEmailAddress = fromEmailAddress;
-            ToEmailAddress = toEmailAddress;
-            Subject = subject;
             Body = body;
+            Subject = subject;
+            ToEmailAddress = toEmailAddress;
+            FromEmailAddress = fromEmailAddress;
         }
-        public static Email CreateConfirmEmail(string emailAddress, Guid code)
+        public static Email CreateConfirmEmail(string userEmail, Guid code)
         {
             return new Email(
                 "getnews@dummymail.com",
-                emailAddress,
+                userEmail,
                 "Bekreft abonnement på GET News",
                 $"Kode: {code}");
+        }
+
+        public static Email UnsubscribeEmail(string userEmail)
+        {
+            return new Email(
+                "getnews@dummymail.com",
+                userEmail,
+                "Endringer i abonnementet",
+                "Vi bekrefter at du har meldt deg av Nyhetsbrevet hos GET News.\n"
+                );
         }
     }
 }

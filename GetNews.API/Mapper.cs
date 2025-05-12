@@ -1,6 +1,9 @@
-﻿using DomainSubscription = GetNews.Core.DomainModel.Subscription;
+﻿// Mapping between Domain and API models
+
+//  Importing necessary namespaces
+using DomainSubscription = GetNews.Core.DomainModel.Subscription;
 using ApiSubscription = GetNews.API.PersistentModel.Subscription;
-using DomainEmail=GetNews.Core.DomainModel.Email;
+using DomainEmail = GetNews.Core.DomainModel.Email;
 using ApiEmail = GetNews.API.ApiModel.Email;
 
 namespace GetNews.API

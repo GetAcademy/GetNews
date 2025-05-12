@@ -5,7 +5,7 @@
         public string EmailAddress { get; }
         public SubscriptionStatus Status { get; private set; }
         public DateOnly LastStatusChange { get; private set; }
-        public Guid? VerificationCode { get; }
+        public Guid VerificationCode { get; private set; }
         public bool IsVerified { get; private set; }
 
         public Subscription(
@@ -14,25 +14,28 @@
             Guid? verificationCode = null,
             bool isVerified = false,
             DateOnly? lastStatusChange = null
-            )
+        )
         {
-            EmailAddress = emailAddress;
+            EmailAddress = emailAddress.Trim().ToLower();
             Status = status;
             IsVerified = isVerified;
-            if (!isVerified) VerificationCode = verificationCode ?? Guid.NewGuid();
+            VerificationCode = verificationCode ?? Guid.NewGuid();
             LastStatusChange = lastStatusChange ?? DateOnly.FromDateTime(DateTime.Now);
         }
 
-        public void ChangeStatus(SubscriptionStatus status)
+        public void ChangeStatus()
         {
-            Status = status;
+
+            Status = NextStatus();
+            IsVerified = Status == SubscriptionStatus.Verified;
             LastStatusChange = DateOnly.FromDateTime(DateTime.Now);
         }
-
-        public void Verify(Guid verificationCode)
+        
+        private SubscriptionStatus NextStatus()
         {
-            IsVerified = verificationCode == VerificationCode;
+            return Status == SubscriptionStatus.Unsubscribed? SubscriptionStatus.SignedUp : Status++;
         }
+
 
     }
 }

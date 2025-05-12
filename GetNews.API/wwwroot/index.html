@@ -1,9 +1,11 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <title></title>
 </head>
+
 <body>
     <div id="app"></div>
     <script>
@@ -29,27 +31,68 @@
                     /><br/>
                 <button onclick="subscribe()">Abonner på nyhetsbrev</button>
                 <button onclick="verify()">Bekreft nyhetsbrev</button>
-                <div style="color:orange;">${model.message??''}</div>
+                <button onclick="unsubscribe()">Stopp Nyhetsbrev</button>
+                <div style="color:orange;">${model.message ?? ''}</div>
             `;
         }
 
         async function subscribe() {
-            const data = await callApi('post', { EmailAddress: model.email })
-            model.message = data.result;
+            // Lager brukeren i databasen (senere skal sende e-post med verifiseringskode) 
+            const data = await callApi('/api/subscription/signup', 'POST', { emailAddress: model.email })
+            // her skal vi sende e-post med verifiseringskode
+            model.message = data.isSuccess
+                ? "Abonnement registrert! Sjekk e-post for verifiseringskode."
+                : `Feil ved registrering: ${data.error || 'ukjent feil'}`;
+
+            console.log("Signup response:", data);
+            updateView();
+        }
+        async function verify() {
+            // sjekker om koden er riktig (senere skal vi oppdatere databasen med verifisert=true)
+            const data = await callApi('/api/subscription/verify', 'POST', { emailAddress: model.email, verificationCode: model.code })
+            // her skal vi oppdatere databasen med verifisert=true
+            // bytt ut post med fetch eller get eller hva som er riktig
+
+            model.message = data.isSuccess
+                ? "Verifisering gjennomført!"
+                : `Verifisering feilet: ${data.error || 'ukjent feil'}`;
+
+            console.log("Verify response:", data);
             updateView();
         }
 
-        async function callApi(method, obj) {
-            const response = await fetch('/api/subscription', {
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                method,
-                body: JSON.stringify(obj)
-            });
-            return response.json();
+        async function unsubscribe()
+        {
+            const data = await callApi('/api/subscription/unsubscribe', 'POST', { emailAddress: model.email })
+            model.message = data.isSuccess
+                ? "Nyhetsbrev Stoppet!"
+                : `Nyhetsbrev kunne ikke stoppes feil: ${data.error || 'ukjent feil'}`;
+
+            console.log("Unsubscribe response: ", data);
+            updateView();
+        }
+
+        async function callApi(url, method, obj) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-type': 'application/json'
+                    },
+                    method,
+                    body: JSON.stringify(obj)
+                });
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    return { IsSuccess: false, error: `${response.status} - ${errorText}` }
+                }
+                return response.json();
+            }
+            catch (err) {
+                return { IsSuccess: false, error: 'Server Fault or Connection Error' }
+            }
         }
 
     </script>
 </body>
+
 </html>

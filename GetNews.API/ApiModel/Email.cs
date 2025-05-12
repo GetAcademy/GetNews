@@ -1,4 +1,6 @@
-﻿namespace GetNews.API.ApiModel
+﻿//  Subscription Entity
+
+namespace GetNews.API.ApiModel
 {
     public class Email
     {
